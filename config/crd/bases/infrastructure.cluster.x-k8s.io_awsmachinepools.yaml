@@ -626,6 +626,13 @@ spec:
                         description: ID of resource
                         type: string
                     type: object
+                  amiType:
+                    default: AL2_x86_64
+                    description: AMIType defines the AMI type
+                    enum:
+                    - AL2_x86_64
+                    - AL2_x86_64_GPU
+                    type: string
                   iamInstanceProfile:
                     description: The name or the Amazon Resource Name (ARN) of the
                       instance profile associated with the IAM role for the instance.

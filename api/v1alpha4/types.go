@@ -724,3 +724,13 @@ type SpotMarketOptions struct {
 	// +kubebuilder:validation:pattern="^[0-9]+(\.[0-9]+)?$"
 	MaxPrice *string `json:"maxPrice,omitempty"`
 }
+
+// MachineAMIType specifies which AWS AMI to use for a AWSMachine and AWSMachinePool.
+type MachineAMIType string
+
+const (
+	// Al2x86_64 is the default AMI type.
+	Al2x86_64 MachineAMIType = "AL2_x86_64"
+	// Al2x86_64GPU is the x86-64 GPU AMI type.
+	Al2x86_64GPU MachineAMIType = "AL2_x86_64_GPU"
+)

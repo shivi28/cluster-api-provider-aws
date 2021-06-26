@@ -112,6 +112,12 @@ type AWSLaunchTemplate struct {
 	// at the cluster level or in the actuator.
 	// +optional
 	AdditionalSecurityGroups []infrav1.AWSResourceReference `json:"additionalSecurityGroups,omitempty"`
+
+	// AMIType defines the AMI type
+	// +kubebuilder:validation:Enum:=AL2_x86_64;AL2_x86_64_GPU
+	// +kubebuilder:default:=AL2_x86_64
+	// +optional
+	AMIType *infrav1.MachineAMIType `json:"amiType,omitempty"`
 }
 
 // Overrides are used to override the instance type specified by the launch template with multiple

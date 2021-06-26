@@ -416,7 +416,7 @@ func (s *Service) DiscoverLaunchTemplateAMI(scope *scope.MachinePoolScope) (*str
 	}
 
 	if scope.IsEKSManaged() && imageLookupFormat == "" && imageLookupOrg == "" && imageLookupBaseOS == "" {
-		lookupAMI, err = s.eksAMILookup(*scope.MachinePool.Spec.Template.Spec.Version)
+		lookupAMI, err = s.eksAMILookup(*scope.MachinePool.Spec.Template.Spec.Version, *scope.AWSMachinePool.Spec.AWSLaunchTemplate.AMIType)
 		if err != nil {
 			return nil, err
 		}
