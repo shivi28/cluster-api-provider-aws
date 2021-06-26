@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha4
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"reflect"
 
 	"github.com/pkg/errors"
@@ -54,6 +55,9 @@ func (r *AWSMachine) ValidateCreate() error {
 	allErrs = append(allErrs, r.validateNonRootVolumes()...)
 	allErrs = append(allErrs, r.validateSSHKeyName()...)
 	allErrs = append(allErrs, r.validateAdditionalSecurityGroups()...)
+	if r.Spec.RootVolume!=nil && r.Spec.RootVolume.Encrypted == nil{
+		r.Spec.RootVolume.Encrypted = aws.Bool(true)
+	}
 
 	return aggregateObjErrors(r.GroupVersionKind().GroupKind(), r.Name, allErrs)
 }
@@ -186,6 +190,9 @@ func (r *AWSMachine) ValidateDelete() error {
 func (r *AWSMachine) Default() {
 	if !r.Spec.CloudInit.InsecureSkipSecretsManager && r.Spec.CloudInit.SecureSecretsBackend == "" {
 		r.Spec.CloudInit.SecureSecretsBackend = SecretBackendSecretsManager
+	}
+	if r.Spec.RootVolume!=nil && r.Spec.RootVolume.Encrypted == nil{
+		r.Spec.RootVolume.Encrypted = aws.Bool(true)
 	}
 }
 

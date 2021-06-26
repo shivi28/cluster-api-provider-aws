@@ -24,6 +24,7 @@ import (
 	time "time"
 	unsafe "unsafe"
 
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	conversion "k8s.io/apimachinery/pkg/conversion"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	v1alpha4 "sigs.k8s.io/cluster-api-provider-aws/api/v1alpha4"
@@ -484,11 +485,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddGeneratedConversionFunc((*v1alpha4.Volume)(nil), (*Volume)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha4_Volume_To_v1alpha3_Volume(a.(*v1alpha4.Volume), b.(*Volume), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddConversionFunc((*apiv1alpha3.APIEndpoint)(nil), (*apiv1alpha4.APIEndpoint)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha3_APIEndpoint_To_v1alpha4_APIEndpoint(a.(*apiv1alpha3.APIEndpoint), b.(*apiv1alpha4.APIEndpoint), scope)
 	}); err != nil {
@@ -516,6 +512,11 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}
 	if err := s.AddConversionFunc((*v1alpha4.Instance)(nil), (*Instance)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha4_Instance_To_v1alpha3_Instance(a.(*v1alpha4.Instance), b.(*Instance), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*v1alpha4.Volume)(nil), (*Volume)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha4_Volume_To_v1alpha3_Volume(a.(*v1alpha4.Volume), b.(*Volume), scope)
 	}); err != nil {
 		return err
 	}
@@ -1093,8 +1094,26 @@ func autoConvert_v1alpha3_AWSMachineSpec_To_v1alpha4_AWSMachineSpec(in *AWSMachi
 	out.FailureDomain = (*string)(unsafe.Pointer(in.FailureDomain))
 	out.Subnet = (*v1alpha4.AWSResourceReference)(unsafe.Pointer(in.Subnet))
 	out.SSHKeyName = (*string)(unsafe.Pointer(in.SSHKeyName))
-	out.RootVolume = (*v1alpha4.Volume)(unsafe.Pointer(in.RootVolume))
-	out.NonRootVolumes = *(*[]v1alpha4.Volume)(unsafe.Pointer(&in.NonRootVolumes))
+	if in.RootVolume != nil {
+		in, out := &in.RootVolume, &out.RootVolume
+		*out = new(v1alpha4.Volume)
+		if err := Convert_v1alpha3_Volume_To_v1alpha4_Volume(*in, *out, s); err != nil {
+			return err
+		}
+	} else {
+		out.RootVolume = nil
+	}
+	if in.NonRootVolumes != nil {
+		in, out := &in.NonRootVolumes, &out.NonRootVolumes
+		*out = make([]v1alpha4.Volume, len(*in))
+		for i := range *in {
+			if err := Convert_v1alpha3_Volume_To_v1alpha4_Volume(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.NonRootVolumes = nil
+	}
 	out.NetworkInterfaces = *(*[]string)(unsafe.Pointer(&in.NetworkInterfaces))
 	out.UncompressedUserData = (*bool)(unsafe.Pointer(in.UncompressedUserData))
 	if err := Convert_v1alpha3_CloudInit_To_v1alpha4_CloudInit(&in.CloudInit, &out.CloudInit, s); err != nil {
@@ -1127,8 +1146,26 @@ func autoConvert_v1alpha4_AWSMachineSpec_To_v1alpha3_AWSMachineSpec(in *v1alpha4
 	out.FailureDomain = (*string)(unsafe.Pointer(in.FailureDomain))
 	out.Subnet = (*AWSResourceReference)(unsafe.Pointer(in.Subnet))
 	out.SSHKeyName = (*string)(unsafe.Pointer(in.SSHKeyName))
-	out.RootVolume = (*Volume)(unsafe.Pointer(in.RootVolume))
-	out.NonRootVolumes = *(*[]Volume)(unsafe.Pointer(&in.NonRootVolumes))
+	if in.RootVolume != nil {
+		in, out := &in.RootVolume, &out.RootVolume
+		*out = new(Volume)
+		if err := Convert_v1alpha4_Volume_To_v1alpha3_Volume(*in, *out, s); err != nil {
+			return err
+		}
+	} else {
+		out.RootVolume = nil
+	}
+	if in.NonRootVolumes != nil {
+		in, out := &in.NonRootVolumes, &out.NonRootVolumes
+		*out = make([]Volume, len(*in))
+		for i := range *in {
+			if err := Convert_v1alpha4_Volume_To_v1alpha3_Volume(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.NonRootVolumes = nil
+	}
 	out.NetworkInterfaces = *(*[]string)(unsafe.Pointer(&in.NetworkInterfaces))
 	out.UncompressedUserData = (*bool)(unsafe.Pointer(in.UncompressedUserData))
 	if err := Convert_v1alpha4_CloudInit_To_v1alpha3_CloudInit(&in.CloudInit, &out.CloudInit, s); err != nil {
@@ -1676,8 +1713,26 @@ func autoConvert_v1alpha3_Instance_To_v1alpha4_Instance(in *Instance, out *v1alp
 	out.PublicIP = (*string)(unsafe.Pointer(in.PublicIP))
 	out.ENASupport = (*bool)(unsafe.Pointer(in.ENASupport))
 	out.EBSOptimized = (*bool)(unsafe.Pointer(in.EBSOptimized))
-	out.RootVolume = (*v1alpha4.Volume)(unsafe.Pointer(in.RootVolume))
-	out.NonRootVolumes = *(*[]v1alpha4.Volume)(unsafe.Pointer(&in.NonRootVolumes))
+	if in.RootVolume != nil {
+		in, out := &in.RootVolume, &out.RootVolume
+		*out = new(v1alpha4.Volume)
+		if err := Convert_v1alpha3_Volume_To_v1alpha4_Volume(*in, *out, s); err != nil {
+			return err
+		}
+	} else {
+		out.RootVolume = nil
+	}
+	if in.NonRootVolumes != nil {
+		in, out := &in.NonRootVolumes, &out.NonRootVolumes
+		*out = make([]v1alpha4.Volume, len(*in))
+		for i := range *in {
+			if err := Convert_v1alpha3_Volume_To_v1alpha4_Volume(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.NonRootVolumes = nil
+	}
 	out.NetworkInterfaces = *(*[]string)(unsafe.Pointer(&in.NetworkInterfaces))
 	out.Tags = *(*map[string]string)(unsafe.Pointer(&in.Tags))
 	out.AvailabilityZone = in.AvailabilityZone
@@ -1706,8 +1761,26 @@ func autoConvert_v1alpha4_Instance_To_v1alpha3_Instance(in *v1alpha4.Instance, o
 	out.PublicIP = (*string)(unsafe.Pointer(in.PublicIP))
 	out.ENASupport = (*bool)(unsafe.Pointer(in.ENASupport))
 	out.EBSOptimized = (*bool)(unsafe.Pointer(in.EBSOptimized))
-	out.RootVolume = (*Volume)(unsafe.Pointer(in.RootVolume))
-	out.NonRootVolumes = *(*[]Volume)(unsafe.Pointer(&in.NonRootVolumes))
+	if in.RootVolume != nil {
+		in, out := &in.RootVolume, &out.RootVolume
+		*out = new(Volume)
+		if err := Convert_v1alpha4_Volume_To_v1alpha3_Volume(*in, *out, s); err != nil {
+			return err
+		}
+	} else {
+		out.RootVolume = nil
+	}
+	if in.NonRootVolumes != nil {
+		in, out := &in.NonRootVolumes, &out.NonRootVolumes
+		*out = make([]Volume, len(*in))
+		for i := range *in {
+			if err := Convert_v1alpha4_Volume_To_v1alpha3_Volume(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.NonRootVolumes = nil
+	}
 	out.NetworkInterfaces = *(*[]string)(unsafe.Pointer(&in.NetworkInterfaces))
 	out.Tags = *(*map[string]string)(unsafe.Pointer(&in.Tags))
 	out.AvailabilityZone = in.AvailabilityZone
@@ -1906,7 +1979,9 @@ func autoConvert_v1alpha3_Volume_To_v1alpha4_Volume(in *Volume, out *v1alpha4.Vo
 	out.Size = in.Size
 	out.Type = in.Type
 	out.IOPS = in.IOPS
-	out.Encrypted = in.Encrypted
+	if err := v1.Convert_bool_To_Pointer_bool(&in.Encrypted, &out.Encrypted, s); err != nil {
+		return err
+	}
 	out.EncryptionKey = in.EncryptionKey
 	return nil
 }
@@ -1921,12 +1996,9 @@ func autoConvert_v1alpha4_Volume_To_v1alpha3_Volume(in *v1alpha4.Volume, out *Vo
 	out.Size = in.Size
 	out.Type = in.Type
 	out.IOPS = in.IOPS
-	out.Encrypted = in.Encrypted
+	if err := v1.Convert_Pointer_bool_To_bool(&in.Encrypted, &out.Encrypted, s); err != nil {
+		return err
+	}
 	out.EncryptionKey = in.EncryptionKey
 	return nil
-}
-
-// Convert_v1alpha4_Volume_To_v1alpha3_Volume is an autogenerated conversion function.
-func Convert_v1alpha4_Volume_To_v1alpha3_Volume(in *v1alpha4.Volume, out *Volume, s conversion.Scope) error {
-	return autoConvert_v1alpha4_Volume_To_v1alpha3_Volume(in, out, s)
 }

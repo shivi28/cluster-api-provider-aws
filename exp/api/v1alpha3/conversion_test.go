@@ -17,14 +17,35 @@ limitations under the License.
 package v1alpha3
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	fuzz "github.com/google/gofuzz"
+	"k8s.io/apimachinery/pkg/api/apitesting/fuzzer"
+	runtimeserializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	"testing"
 
 	. "github.com/onsi/gomega"
 
-	runtime "k8s.io/apimachinery/pkg/runtime"
-	v1alpha4 "sigs.k8s.io/cluster-api-provider-aws/exp/api/v1alpha4"
+	"k8s.io/apimachinery/pkg/runtime"
+	v1infra4 "sigs.k8s.io/cluster-api-provider-aws/api/v1alpha4"
+	"sigs.k8s.io/cluster-api-provider-aws/exp/api/v1alpha4"
 	utilconversion "sigs.k8s.io/cluster-api/util/conversion"
 )
+
+func fuzzFuncs(_ runtimeserializer.CodecFactory) []interface{} {
+	return []interface{}{
+		AWSMachinePoolFuzzer,
+	}
+}
+
+func AWSMachinePoolFuzzer(obj *v1alpha4.AWSMachinePool, c fuzz.Continue) {
+	c.FuzzNoCustom(obj)
+
+	if obj.Spec.AWSLaunchTemplate.RootVolume == nil {
+		obj.Spec.AWSLaunchTemplate.RootVolume = &v1infra4.Volume{}
+	}
+
+	obj.Spec.AWSLaunchTemplate.RootVolume.Encrypted = aws.Bool(false)
+}
 
 func TestFuzzyConversion(t *testing.T) {
 	g := NewWithT(t)
@@ -33,9 +54,10 @@ func TestFuzzyConversion(t *testing.T) {
 	g.Expect(v1alpha4.AddToScheme(scheme)).To(Succeed())
 
 	t.Run("for AWSMachinePool", utilconversion.FuzzTestFunc(utilconversion.FuzzTestFuncInput{
-		Scheme: scheme,
-		Hub:    &v1alpha4.AWSMachinePool{},
-		Spoke:  &AWSMachinePool{},
+		Scheme:      scheme,
+		Hub:         &v1alpha4.AWSMachinePool{},
+		Spoke:       &AWSMachinePool{},
+		FuzzerFuncs: []fuzzer.FuzzerFuncs{fuzzFuncs},
 	}))
 
 	t.Run("for AWSManagedMachinePool", utilconversion.FuzzTestFunc(utilconversion.FuzzTestFuncInput{
