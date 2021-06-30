@@ -17,8 +17,9 @@ limitations under the License.
 package v1alpha4
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"reflect"
+
+	"github.com/aws/aws-sdk-go/aws"
 
 	"github.com/pkg/errors"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -55,7 +56,7 @@ func (r *AWSMachine) ValidateCreate() error {
 	allErrs = append(allErrs, r.validateNonRootVolumes()...)
 	allErrs = append(allErrs, r.validateSSHKeyName()...)
 	allErrs = append(allErrs, r.validateAdditionalSecurityGroups()...)
-	if r.Spec.RootVolume!=nil && r.Spec.RootVolume.Encrypted == nil{
+	if r.Spec.RootVolume != nil && r.Spec.RootVolume.Encrypted == nil {
 		r.Spec.RootVolume.Encrypted = aws.Bool(true)
 	}
 
@@ -191,7 +192,7 @@ func (r *AWSMachine) Default() {
 	if !r.Spec.CloudInit.InsecureSkipSecretsManager && r.Spec.CloudInit.SecureSecretsBackend == "" {
 		r.Spec.CloudInit.SecureSecretsBackend = SecretBackendSecretsManager
 	}
-	if r.Spec.RootVolume!=nil && r.Spec.RootVolume.Encrypted == nil{
+	if r.Spec.RootVolume != nil && r.Spec.RootVolume.Encrypted == nil {
 		r.Spec.RootVolume.Encrypted = aws.Bool(true)
 	}
 }
