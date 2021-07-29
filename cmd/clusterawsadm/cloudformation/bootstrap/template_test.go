@@ -22,10 +22,11 @@ import (
 	"path"
 	"testing"
 
-	"github.com/awslabs/goformation/v4/cloudformation"
-	"github.com/sergi/go-diff/diffmatchpatch"
 	"k8s.io/utils/pointer"
 	infrav1 "sigs.k8s.io/cluster-api-provider-aws/api/v1alpha4"
+
+	"github.com/awslabs/goformation/v4/cloudformation"
+	"github.com/sergi/go-diff/diffmatchpatch"
 	"sigs.k8s.io/yaml"
 )
 
@@ -158,6 +159,14 @@ func Test_RenderCloudformation(t *testing.T) {
 						Action:   infrav1.Actions{"test:controller-action"},
 					},
 				}
+				return t
+			},
+		},
+		{
+			fixture: "with_eks_view_nodes_workloads",
+			template: func() Template {
+				t := NewTemplate()
+				t.Spec.EKS.EnableEKSViewNodesAndWorkloadsPolicy = true
 				return t
 			},
 		},
