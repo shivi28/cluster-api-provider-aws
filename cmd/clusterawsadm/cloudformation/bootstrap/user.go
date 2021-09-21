@@ -46,7 +46,7 @@ func (t Template) bootstrapUserPolicy() []cfn_iam.User_Policy {
 	return userPolicies
 }
 
-func (t Template) eksViewNodesAndWorkloadsPolicies() *v1alpha4.PolicyDocument {
+func (t Template) eksConsolePolicies() *v1alpha4.PolicyDocument {
 	return &v1alpha4.PolicyDocument{
 		Version: v1alpha4.CurrentVersion,
 		Statement: []v1alpha4.StatementEntry{

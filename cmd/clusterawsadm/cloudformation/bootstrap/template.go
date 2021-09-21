@@ -49,7 +49,7 @@ const (
 	ControlPlanePolicy                PolicyName = "AWSIAMManagedPolicyCloudProviderControlPlane"
 	NodePolicy                        PolicyName = "AWSIAMManagedPolicyCloudProviderNodes"
 	CSIPolicy                         PolicyName = "AWSEBSCSIPolicyController"
-	EKSViewNodesAndWorkloadsPolicy    PolicyName = "AWSIAMManagedPolicyEKSViewNodesAndWorkloads"
+	EKSConsolePolicy                  PolicyName = "AWSIAMManagedPolicyEKSConsole"
 )
 
 // Template is an AWS CloudFormation template to bootstrap
@@ -207,10 +207,10 @@ func (t Template) RenderCloudFormation() *cloudformation.Template {
 	}
 
 	if t.Spec.EKS.EnableNodesAndWorkloadsPolicy {
-		template.Resources[string(EKSViewNodesAndWorkloadsPolicy)] = &cfn_iam.ManagedPolicy{
-			ManagedPolicyName: t.NewManagedName("eks-view-nodes-workloads"),
+		template.Resources[string(EKSConsolePolicy)] = &cfn_iam.ManagedPolicy{
+			ManagedPolicyName: t.NewManagedName("eks-console"),
 			Description:       `For users/groups to view EKS nodes and workloads`,
-			PolicyDocument:    t.eksViewNodesAndWorkloadsPolicies(),
+			PolicyDocument:    t.eksConsolePolicies(),
 		}
 	}
 
