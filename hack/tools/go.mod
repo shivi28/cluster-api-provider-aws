@@ -11,7 +11,7 @@ require (
 	github.com/itchyny/gojq v0.12.5
 	github.com/onsi/ginkgo v1.16.4
 	github.com/spf13/pflag v1.0.5
-	k8s.io/apimachinery v0.22.2
+	k8s.io/apimachinery v0.22.3
 	k8s.io/code-generator v0.22.2
 	k8s.io/gengo v0.0.0-20201214224949-b6c5ce23f027
 	k8s.io/klog v1.0.0 // indirect
