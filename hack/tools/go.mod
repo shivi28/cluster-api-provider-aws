@@ -20,6 +20,6 @@ require (
 	sigs.k8s.io/cluster-api/hack/tools v0.0.0-20211006034833-18ecf48ff1ca
 	sigs.k8s.io/controller-tools v0.7.0
 	sigs.k8s.io/kind v0.11.1
-	sigs.k8s.io/kustomize/kustomize/v4 v4.4.0
+	sigs.k8s.io/kustomize/kustomize/v4 v4.4.1
 	sigs.k8s.io/testing_frameworks v0.1.2
 )
