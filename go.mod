@@ -14,7 +14,7 @@ require (
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/aws/amazon-vpc-cni-k8s v1.9.3
 	github.com/aws/aws-lambda-go v1.27.0
-	github.com/aws/aws-sdk-go v1.40.56
+	github.com/aws/aws-sdk-go v1.42.23
 	github.com/awslabs/goformation/v4 v4.19.5
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -47,7 +47,7 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/net v0.0.0-20211005215030-d2e5035098b3
+	golang.org/x/net v0.0.0-20211209124913-491a49abca63
 	golang.org/x/sys v0.0.0-20211004093028-2c5d950f24ef // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
