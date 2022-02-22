@@ -131,4 +131,8 @@ func (r *AWSMachinePool) Default() {
 		log.Info("DefaultCoolDown is zero, setting 300 seconds as default")
 		r.Spec.DefaultCoolDown.Duration = 300 * time.Second
 	}
+
+	if len(r.Spec.AvailabilityZones) == 1 && r.Spec.AvailabilityZones[0] == "" {
+		r.Spec.AvailabilityZones = nil
+	}
 }
