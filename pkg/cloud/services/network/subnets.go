@@ -19,6 +19,7 @@ package network
 import (
 	"fmt"
 	"math/rand"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"sort"
 	"strings"
 
@@ -337,6 +338,9 @@ func (s *Service) describeSubnets() (*ec2.DescribeSubnetsOutput, error) {
 		record.Eventf(s.scope.InfraCluster(), "FailedDescribeSubnet", "Failed to describe subnets in vpc %q: %v", s.scope.VPC().ID, err)
 		return nil, errors.Wrapf(err, "failed to describe subnets in vpc %q", s.scope.VPC().ID)
 	}
+	metrics.AWSCall.Inc()
+	metrics.DescribeSubnets.Inc()
+
 	return out, nil
 }
 
@@ -352,6 +356,9 @@ func (s *Service) createSubnet(sn *infrav1.SubnetSpec) (*infrav1.SubnetSpec, err
 			),
 		},
 	})
+	metrics.AWSCall.Inc()
+	metrics.CreateSubnet.Inc()
+
 	if err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedCreateSubnet", "Failed creating new managed Subnet %v", err)
 		return nil, errors.Wrap(err, "failed to create subnet")
@@ -365,6 +372,9 @@ func (s *Service) createSubnet(sn *infrav1.SubnetSpec) (*infrav1.SubnetSpec, err
 		return nil, errors.Wrapf(err, "failed to wait for subnet %q", *out.Subnet.SubnetId)
 	}
 
+	metrics.AWSCall.Inc()
+	metrics.WaitUntilSubnetAvailable.Inc()
+
 	if sn.IsPublic {
 		attReq := &ec2.ModifySubnetAttributeInput{
 			MapPublicIpOnLaunch: &ec2.AttributeBooleanValue{
@@ -377,6 +387,9 @@ func (s *Service) createSubnet(sn *infrav1.SubnetSpec) (*infrav1.SubnetSpec, err
 			if _, err := s.EC2Client.ModifySubnetAttribute(attReq); err != nil {
 				return false, err
 			}
+			metrics.AWSCall.Inc()
+			metrics.ModifySubnetAttribute.Inc()
+
 			return true, nil
 		}, awserrors.SubnetNotFound); err != nil {
 			record.Warnf(s.scope.InfraCluster(), "FailedModifySubnetAttributes", "Failed modifying managed Subnet %q attributes: %v", *out.Subnet.SubnetId, err)

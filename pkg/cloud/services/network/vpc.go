@@ -18,6 +18,7 @@ package network
 
 import (
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -118,6 +119,8 @@ func (s *Service) ensureManagedVPCAttributes(vpc *infrav1.VPCSpec) error {
 		Attribute: aws.String("enableDnsHostnames"),
 	}
 	vpcAttr, err := s.EC2Client.DescribeVpcAttribute(descAttrInput)
+	metrics.AWSCall.Inc()
+	metrics.DescribeVpcAttributeCalls.Inc()
 	if err != nil {
 		// If the returned error is a 'NotFound' error it should trigger retry
 		if code, ok := awserrors.Code(errors.Cause(err)); ok && code == awserrors.VPCNotFound {
@@ -134,6 +137,8 @@ func (s *Service) ensureManagedVPCAttributes(vpc *infrav1.VPCSpec) error {
 		} else {
 			updated = true
 		}
+		metrics.AWSCall.Inc()
+		metrics.ModifyVpcAttributeCalls.Inc()
 	}
 
 	descAttrInput = &ec2.DescribeVpcAttributeInput{
@@ -141,6 +146,8 @@ func (s *Service) ensureManagedVPCAttributes(vpc *infrav1.VPCSpec) error {
 		Attribute: aws.String("enableDnsSupport"),
 	}
 	vpcAttr, err = s.EC2Client.DescribeVpcAttribute(descAttrInput)
+	metrics.AWSCall.Inc()
+	metrics.DescribeVpcAttributeCalls.Inc()
 	if err != nil {
 		// If the returned error is a 'NotFound' error it should trigger retry
 		if code, ok := awserrors.Code(errors.Cause(err)); ok && code == awserrors.VPCNotFound {
@@ -157,6 +164,8 @@ func (s *Service) ensureManagedVPCAttributes(vpc *infrav1.VPCSpec) error {
 		} else {
 			updated = true
 		}
+		metrics.AWSCall.Inc()
+		metrics.ModifyVpcAttributeCalls.Inc()
 	}
 
 	if len(errs) > 0 {
@@ -188,6 +197,8 @@ func (s *Service) createVPC() (*infrav1.VPCSpec, error) {
 		record.Warnf(s.scope.InfraCluster(), "FailedCreateVPC", "Failed to create new managed VPC: %v", err)
 		return nil, errors.Wrap(err, "failed to create vpc")
 	}
+	metrics.AWSCall.Inc()
+	metrics.CreateVpcCalls.Inc()
 
 	record.Eventf(s.scope.InfraCluster(), "SuccessfulCreateVPC", "Created new managed VPC %q", *out.Vpc.VpcId)
 	s.scope.V(2).Info("Created new VPC with cidr", "vpc-id", *out.Vpc.VpcId, "cidr-block", *out.Vpc.CidrBlock)
@@ -247,6 +258,8 @@ func (s *Service) describeVPCByID() (*infrav1.VPCSpec, error) {
 
 		return nil, errors.Wrap(err, "failed to query ec2 for VPCs")
 	}
+	metrics.AWSCall.Inc()
+	metrics.DescribeVpcsCalls.Inc()
 
 	if len(out.Vpcs) == 0 {
 		return nil, awserrors.NewNotFound(fmt.Sprintf("could not find vpc %q", s.scope.VPC().ID))

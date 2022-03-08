@@ -19,6 +19,7 @@ package instancestate
 import (
 	"encoding/json"
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -37,6 +38,8 @@ func (s *Service) reconcileSQSQueue() error {
 		QueueName:  aws.String(GenerateQueueName(s.scope.Name())),
 		Attributes: aws.StringMap(attrs),
 	})
+	metrics.AWSCall.Inc()
+	metrics.CreateQueue.Inc()
 
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
@@ -60,6 +63,8 @@ func (s *Service) deleteSQSQueue() error {
 	if err != nil && queueNotFoundError(err) {
 		return nil
 	}
+	metrics.AWSCall.Inc()
+	metrics.DeleteQueue.Inc()
 
 	return errors.Wrap(err, "unable to delete queue")
 }
@@ -92,6 +97,9 @@ func (s *Service) createPolicyForRule(input *createPolicyForRuleInput) error {
 		QueueUrl:   aws.String(input.QueueURL),
 		Attributes: aws.StringMap(attrs),
 	})
+
+	metrics.AWSCall.Inc()
+	metrics.SetQueueAttributes.Inc()
 
 	return errors.Wrap(err, "unable to update queue attributes")
 }

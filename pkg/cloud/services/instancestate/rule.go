@@ -19,6 +19,7 @@ package instancestate
 import (
 	"encoding/json"
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -38,6 +39,8 @@ func (s Service) reconcileRules() error {
 	ruleResp, err := s.EventBridgeClient.DescribeRule(&eventbridge.DescribeRuleInput{
 		Name: aws.String(s.getEC2RuleName()),
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeRule.Inc()
 	if err != nil {
 		if resourceNotFoundError(err) {
 			ruleNotFound = true
@@ -55,7 +58,8 @@ func (s Service) reconcileRules() error {
 		ruleResp, err = s.EventBridgeClient.DescribeRule(&eventbridge.DescribeRuleInput{
 			Name: aws.String(s.getEC2RuleName()),
 		})
-
+		metrics.AWSCall.Inc()
+		metrics.DescribeRule.Inc()
 		if err != nil {
 			return errors.Wrapf(err, "unable to describe new rule %s", s.getEC2RuleName())
 		}
@@ -64,6 +68,8 @@ func (s Service) reconcileRules() error {
 	queueURLResp, err := s.SQSClient.GetQueueUrl(&sqs.GetQueueUrlInput{
 		QueueName: aws.String(GenerateQueueName(s.scope.Name())),
 	})
+	metrics.AWSCall.Inc()
+	metrics.GetQueueURL.Inc()
 
 	if err != nil {
 		return errors.Wrap(err, "unable to get queue URL")
@@ -72,7 +78,8 @@ func (s Service) reconcileRules() error {
 		AttributeNames: aws.StringSlice([]string{sqs.QueueAttributeNameQueueArn, sqs.QueueAttributeNamePolicy}),
 		QueueUrl:       queueURLResp.QueueUrl,
 	})
-
+	metrics.AWSCall.Inc()
+	metrics.GetQueueAttributes.Inc()
 	if err != nil {
 		return errors.Wrap(err, "unable to get queue attributes")
 	}
@@ -80,6 +87,8 @@ func (s Service) reconcileRules() error {
 	targetsResp, err := s.EventBridgeClient.ListTargetsByRule(&eventbridge.ListTargetsByRuleInput{
 		Rule: aws.String(s.getEC2RuleName()),
 	})
+	metrics.AWSCall.Inc()
+	metrics.ListTargetsByRule.Inc()
 	if err != nil {
 		return errors.Wrapf(err, "unable to list targets for rule %s", s.getEC2RuleName())
 	}
@@ -100,6 +109,9 @@ func (s Service) reconcileRules() error {
 				Id:  aws.String(GenerateQueueName(s.scope.Name())),
 			}},
 		})
+
+		metrics.AWSCall.Inc()
+		metrics.PutTargets.Inc()
 
 		if err != nil {
 			return errors.Wrapf(err, "unable to add SQS target %s to rule %s", GenerateQueueName(s.scope.Name()), s.getEC2RuleName())
@@ -140,6 +152,8 @@ func (s Service) createRule() error {
 		EventPattern: aws.String(string(data)),
 		State:        aws.String(eventbridge.RuleStateDisabled),
 	})
+	metrics.AWSCall.Inc()
+	metrics.PutRule.Inc()
 
 	return err
 }
@@ -149,13 +163,17 @@ func (s Service) deleteRules() error {
 		Rule: aws.String(s.getEC2RuleName()),
 		Ids:  aws.StringSlice([]string{GenerateQueueName(s.scope.Name())}),
 	})
+	metrics.AWSCall.Inc()
+	metrics.RemoveTargets.Inc()
+
 	if err != nil && !resourceNotFoundError(err) {
 		return errors.Wrapf(err, "unable to remove target %s for rule %s", GenerateQueueName(s.scope.Name()), s.getEC2RuleName())
 	}
 	_, err = s.EventBridgeClient.DeleteRule(&eventbridge.DeleteRuleInput{
 		Name: aws.String(s.getEC2RuleName()),
 	})
-
+	metrics.AWSCall.Inc()
+	metrics.DeleteRule.Inc()
 	if err != nil && resourceNotFoundError(err) {
 		return nil
 	}
@@ -168,6 +186,8 @@ func (s Service) AddInstanceToEventPattern(instanceID string) error {
 	ruleResp, err := s.EventBridgeClient.DescribeRule(&eventbridge.DescribeRuleInput{
 		Name: aws.String(s.getEC2RuleName()),
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeRule.Inc()
 	if err != nil {
 		return errors.Wrapf(err, "unable to describe rule %s", s.getEC2RuleName())
 	}
@@ -195,6 +215,8 @@ func (s Service) AddInstanceToEventPattern(instanceID string) error {
 		EventPattern: aws.String(string(eventData)),
 		State:        aws.String(eventbridge.RuleStateEnabled),
 	})
+	metrics.AWSCall.Inc()
+	metrics.PutRule.Inc()
 	return err
 }
 
@@ -204,6 +226,8 @@ func (s Service) RemoveInstanceFromEventPattern(instanceID string) {
 	ruleResp, err := s.EventBridgeClient.DescribeRule(&eventbridge.DescribeRuleInput{
 		Name: aws.String(s.getEC2RuleName()),
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeRule.Inc()
 	if err != nil {
 		return
 	}
@@ -238,6 +262,8 @@ func (s Service) RemoveInstanceFromEventPattern(instanceID string) {
 			input.State = aws.String(eventbridge.RuleStateDisabled)
 		}
 		_, _ = s.EventBridgeClient.PutRule(input)
+		metrics.AWSCall.Inc()
+		metrics.PutRule.Inc()
 	}
 }
 

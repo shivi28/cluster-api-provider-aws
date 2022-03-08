@@ -17,6 +17,7 @@ limitations under the License.
 package network
 
 import (
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"sort"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -37,6 +38,9 @@ func (s *Service) getAvailableZones() ([]string, error) {
 		record.Eventf(s.scope.InfraCluster(), "FailedDescribeAvailableZone", "Failed getting available zones: %v", err)
 		return nil, errors.Wrap(err, "failed to describe availability zones")
 	}
+
+	metrics.AWSCall.Inc()
+	metrics.DescribeAvailabilityZones.Inc()
 
 	zones := make([]string, 0, len(out.AvailabilityZones))
 	for _, zone := range out.AvailabilityZones {

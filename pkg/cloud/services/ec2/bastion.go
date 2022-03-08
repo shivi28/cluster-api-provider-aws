@@ -19,6 +19,7 @@ package ec2
 import (
 	"encoding/base64"
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -147,7 +148,8 @@ func (s *Service) describeBastionInstance() (*infrav1.Instance, error) {
 		record.Eventf(s.scope.InfraCluster(), "FailedDescribeBastionHost", "Failed to describe bastion host: %v", err)
 		return nil, errors.Wrap(err, "failed to describe bastion host")
 	}
-
+	metrics.AWSCall.Inc()
+	metrics.DescribeInstances.Inc()
 	// TODO: properly handle multiple bastions found rather than just returning
 	// the first non-terminated.
 	for _, res := range out.Reservations {

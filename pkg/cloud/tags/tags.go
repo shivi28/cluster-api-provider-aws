@@ -18,6 +18,7 @@ package tags
 
 import (
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"sort"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -82,6 +83,8 @@ func (b *Builder) Ensure(current infrav1.Tags) error {
 		return ErrBuildParamsRequired
 	}
 	if diff := computeDiff(current, *b.params); len(diff) > 0 {
+		metrics.AWSCall.Inc()
+		metrics.EnsureTags.Inc()
 		return b.Apply()
 	}
 	return nil
@@ -115,6 +118,9 @@ func WithEC2(ec2client ec2iface.EC2API) BuilderOption {
 			}
 
 			_, err := ec2client.CreateTags(createTagsInput)
+			metrics.AWSCall.Inc()
+			metrics.CreateTags.Inc()
+
 			return errors.Wrapf(err, "failed to tag resource %q in cluster %q", params.ResourceID, params.ClusterName)
 		}
 	}

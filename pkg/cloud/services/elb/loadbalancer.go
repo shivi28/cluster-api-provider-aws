@@ -19,6 +19,7 @@ package elb
 import (
 	"fmt"
 	"reflect"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"strings"
 	"time"
 
@@ -111,6 +112,8 @@ func (s *Service) ReconcileLoadbalancers() error {
 				LoadBalancerName: &apiELB.Name,
 				Subnets:          aws.StringSlice(spec.SubnetIDs),
 			})
+			metrics.AWSCall.Inc()
+			metrics.AttachLoadBalancerToSubnets.Inc()
 			if err != nil {
 				return errors.Wrapf(err, "failed to attach apiserver load balancer %q to subnets", apiELB.Name)
 			}
@@ -125,6 +128,8 @@ func (s *Service) ReconcileLoadbalancers() error {
 				LoadBalancerName: &apiELB.Name,
 				SecurityGroups:   aws.StringSlice(spec.SecurityGroupIDs),
 			})
+			metrics.AWSCall.Inc()
+			metrics.ApplySecurityGroupsToLoadBalancer.Inc()
 			if err != nil {
 				return errors.Wrapf(err, "failed to apply security groups to load balancer %q", apiELB.Name)
 			}
@@ -246,6 +251,8 @@ func (s *Service) InstanceIsRegisteredWithAPIServerELB(i *infrav1.Instance) (boo
 	}
 
 	output, err := s.ELBClient.DescribeLoadBalancers(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeLoadBalancers.Inc()
 	if err != nil {
 		return false, errors.Wrapf(err, "error describing ELB %q", name)
 	}
@@ -307,6 +314,8 @@ func (s *Service) RegisterInstanceWithAPIServerELB(i *infrav1.Instance) error {
 	}
 
 	_, err = s.ELBClient.RegisterInstancesWithLoadBalancer(input)
+	metrics.AWSCall.Inc()
+	metrics.RegisterInstancesWithLoadBalancer.Inc()
 	return err
 }
 
@@ -318,6 +327,8 @@ func (s *Service) getControlPlaneLoadBalancerSubnets() (infrav1.Subnets, error) 
 		SubnetIds: aws.StringSlice(s.scope.ControlPlaneLoadBalancer().Subnets),
 	}
 	res, err := s.EC2Client.DescribeSubnets(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeSubnets.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -346,6 +357,8 @@ func (s *Service) DeregisterInstanceFromAPIServerELB(i *infrav1.Instance) error 
 	}
 
 	_, err = s.ELBClient.DeregisterInstancesFromLoadBalancer(input)
+	metrics.AWSCall.Inc()
+	metrics.DeregisterInstancesFromLoadBalancer.Inc()
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
@@ -466,6 +479,8 @@ func (s *Service) getAPIServerClassicELBSpec(elbName string) (*infrav1.ClassicEL
 			SubnetIds: aws.StringSlice(s.scope.ControlPlaneLoadBalancer().Subnets),
 		}
 		out, err := s.EC2Client.DescribeSubnets(input)
+		metrics.AWSCall.Inc()
+		metrics.DescribeSubnets.Inc()
 		if err != nil {
 			return nil, err
 		}
@@ -517,6 +532,8 @@ func (s *Service) createClassicELB(spec *infrav1.ClassicELB) (*infrav1.ClassicEL
 	}
 
 	out, err := s.ELBClient.CreateLoadBalancer(input)
+	metrics.AWSCall.Inc()
+	metrics.CreateLoadBalancer.Inc()
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to create classic load balancer: %v", spec)
 	}
@@ -535,6 +552,8 @@ func (s *Service) createClassicELB(spec *infrav1.ClassicELB) (*infrav1.ClassicEL
 			}); err != nil {
 				return false, err
 			}
+			metrics.AWSCall.Inc()
+			metrics.ConfigureHealthCheck.Inc()
 			return true, nil
 		}, awserrors.LoadBalancerNotFound); err != nil {
 			return nil, errors.Wrapf(err, "failed to configure health check for classic load balancer: %v", spec)
@@ -568,6 +587,8 @@ func (s *Service) configureAttributes(name string, attributes infrav1.ClassicELB
 		if _, err := s.ELBClient.ModifyLoadBalancerAttributes(attrs); err != nil {
 			return false, err
 		}
+		metrics.AWSCall.Inc()
+		metrics.ModifyLoadBalancerAttributes.Inc()
 		return true, nil
 	}, awserrors.LoadBalancerNotFound); err != nil {
 		return errors.Wrapf(err, "failed to configure attributes for classic load balancer: %v", name)
@@ -584,6 +605,8 @@ func (s *Service) deleteClassicELB(name string) error {
 	if _, err := s.ELBClient.DeleteLoadBalancer(input); err != nil {
 		return err
 	}
+	metrics.AWSCall.Inc()
+	metrics.DeleteLoadBalancer.Inc()
 
 	s.scope.Info("Deleted AWS cloud provider load balancers")
 	return nil
@@ -633,6 +656,8 @@ func (s *Service) filterByOwnedTag(tagKey string) ([]string, error) {
 		}
 		return true
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeLoadBalancersPages.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -648,6 +673,8 @@ func (s *Service) filterByOwnedTag(tagKey string) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
+		metrics.AWSCall.Inc()
+		metrics.DescribeTags.Inc()
 		for _, tagDesc := range output.TagDescriptions {
 			for _, tag := range tagDesc.Tags {
 				if *tag.Key == tagKey && *tag.Value == string(infrav1.ResourceLifecycleOwned) {
@@ -681,6 +708,8 @@ func (s *Service) describeClassicELB(name string) (*infrav1.ClassicELB, error) {
 	}
 
 	out, err := s.ELBClient.DescribeLoadBalancers(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeLoadBalancers.Inc()
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
@@ -717,6 +746,8 @@ func (s *Service) describeClassicELB(name string) (*infrav1.ClassicELB, error) {
 	outAtt, err := s.ELBClient.DescribeLoadBalancerAttributes(&elb.DescribeLoadBalancerAttributesInput{
 		LoadBalancerName: aws.String(name),
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeLoadBalancerAttributes.Inc()
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to describe classic load balancer %q attributes", name)
 	}
@@ -733,6 +764,8 @@ func (s *Service) describeClassicELBTags(name string) ([]*elb.Tag, error) {
 	output, err := s.ELBClient.DescribeTags(&elb.DescribeTagsInput{
 		LoadBalancerNames: []*string{aws.String(name)},
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeTags.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -773,12 +806,16 @@ func (s *Service) reconcileELBTags(lb *infrav1.ClassicELB, desiredTags map[strin
 		if _, err := s.ELBClient.AddTags(addTagsInput); err != nil {
 			return err
 		}
+		metrics.AWSCall.Inc()
+		metrics.AddTags.Inc()
 	}
 
 	if len(removeTagsInput.Tags) > 0 {
 		if _, err := s.ELBClient.RemoveTags(removeTagsInput); err != nil {
 			return err
 		}
+		metrics.AWSCall.Inc()
+		metrics.RemoveTags.Inc()
 	}
 
 	return nil

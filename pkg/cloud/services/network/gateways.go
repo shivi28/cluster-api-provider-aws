@@ -18,6 +18,7 @@ package network
 
 import (
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -125,6 +126,9 @@ func (s *Service) createInternetGateway() (*ec2.InternetGateway, error) {
 			tags.BuildParamsToTagSpecification(ec2.ResourceTypeInternetGateway, s.getGatewayTagParams(services.TemporaryResourceID)),
 		},
 	})
+	metrics.AWSCall.Inc()
+	metrics.CreateInternetGateway.Inc()
+
 	if err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedCreateInternetGateway", "Failed to create new managed Internet Gateway: %v", err)
 		return nil, errors.Wrap(err, "failed to create internet gateway")
@@ -139,6 +143,8 @@ func (s *Service) createInternetGateway() (*ec2.InternetGateway, error) {
 		}); err != nil {
 			return false, err
 		}
+		metrics.AWSCall.Inc()
+		metrics.AttachInternetGateway.Inc()
 		return true, nil
 	}, awserrors.InternetGatewayNotFound); err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedAttachInternetGateway", "Failed to attach managed Internet Gateway %q to vpc %q: %v", *ig.InternetGateway.InternetGatewayId, s.scope.VPC().ID, err)
@@ -156,6 +162,9 @@ func (s *Service) describeVpcInternetGateways() ([]*ec2.InternetGateway, error) 
 			filter.EC2.VPCAttachment(s.scope.VPC().ID),
 		},
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeInternetGateways.Inc()
+
 	if err != nil {
 		record.Eventf(s.scope.InfraCluster(), "FailedDescribeInternetGateway", "Failed to describe internet gateways in vpc %q: %v", s.scope.VPC().ID, err)
 		return nil, errors.Wrapf(err, "failed to describe internet gateways in vpc %q", s.scope.VPC().ID)

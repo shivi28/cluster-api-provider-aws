@@ -18,6 +18,7 @@ package network
 
 import (
 	"reflect"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
@@ -40,6 +41,8 @@ func (s *Service) associateSecondaryCidr() error {
 	if err != nil {
 		return err
 	}
+	metrics.DescribeVpcsCalls.Inc()
+	metrics.AWSCall.Inc()
 
 	if !isVPCPresent(vpcs) {
 		return errors.Errorf("failed to associateSecondaryCidr as there are no VPCs present")
@@ -60,6 +63,9 @@ func (s *Service) associateSecondaryCidr() error {
 		record.Warnf(s.scope.InfraCluster(), "FailedAssociateSecondaryCidr", "Failed associating secondary CIDR with VPC %v", err)
 		return err
 	}
+
+	metrics.AssociateVpcCidrBlockCalls.Inc()
+	metrics.AWSCall.Inc()
 
 	// once IPv6 is supported, we need to modify out.CidrBlockAssociation.AssociationId to out.Ipv6CidrBlockAssociation.AssociationId
 	record.Eventf(s.scope.InfraCluster(), "SuccessfulAssociateSecondaryCidr", "Associated secondary CIDR with VPC %q", *out.CidrBlockAssociation.AssociationId)

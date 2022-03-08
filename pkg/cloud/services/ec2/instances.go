@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"sort"
 	"strings"
 	"time"
@@ -56,6 +57,8 @@ func (s *Service) GetRunningInstanceByTags(scope *scope.MachineScope) (*infrav1.
 	}
 
 	out, err := s.EC2Client.DescribeInstances(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeInstances.Inc()
 	switch {
 	case awserrors.IsNotFound(err):
 		return nil, nil
@@ -91,6 +94,8 @@ func (s *Service) InstanceIfExists(id *string) (*infrav1.Instance, error) {
 	}
 
 	out, err := s.EC2Client.DescribeInstances(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeInstances.Inc()
 	switch {
 	case awserrors.IsNotFound(err):
 		record.Eventf(s.scope.InfraCluster(), "FailedFindInstances", "failed to find instance by providerId %q: %v", *id, err)
@@ -362,9 +367,13 @@ func (s *Service) findSubnet(scope *scope.MachineScope) (string, error) {
 // getFilteredSubnets fetches subnets filtered based on the criteria passed.
 func (s *Service) getFilteredSubnets(criteria ...*ec2.Filter) ([]*ec2.Subnet, error) {
 	out, err := s.EC2Client.DescribeSubnets(&ec2.DescribeSubnetsInput{Filters: criteria})
+	metrics.AWSCall.Inc()
+	metrics.DescribeSubnets.Inc()
+
 	if err != nil {
 		return nil, err
 	}
+
 	return out.Subnets, nil
 }
 
@@ -444,6 +453,9 @@ func (s *Service) TerminateInstance(instanceID string) error {
 		return errors.Wrapf(err, "failed to terminate instance with id %q", instanceID)
 	}
 
+	metrics.AWSCall.Inc()
+	metrics.TerminateInstances.Inc()
+
 	s.scope.V(2).Info("Terminated instance", "instance-id", instanceID)
 	return nil
 }
@@ -465,6 +477,8 @@ func (s *Service) TerminateInstanceAndWait(instanceID string) error {
 		return errors.Wrapf(err, "failed to wait for instance %q termination", instanceID)
 	}
 
+	metrics.AWSCall.Inc()
+	metrics.WaitUntilInstanceTerminated.Inc()
 	return nil
 }
 
@@ -561,6 +575,8 @@ func (s *Service) runInstance(role string, i *infrav1.Instance) (*infrav1.Instan
 	}
 
 	out, err := s.EC2Client.RunInstances(input)
+	metrics.AWSCall.Inc()
+	metrics.RunInstances.Inc()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to run instance")
 	}
@@ -581,6 +597,8 @@ func (s *Service) runInstance(role string, i *infrav1.Instance) (*infrav1.Instan
 	); err != nil {
 		s.scope.V(2).Info("Could not determine if Machine is running. Machine state might be unavailable until next renconciliation.")
 	}
+	metrics.AWSCall.Inc()
+	metrics.WaitUntilInstanceRunningWithContext.Inc()
 
 	return s.SDKToInstance(out.Instances[0])
 }
@@ -679,6 +697,8 @@ func (s *Service) UpdateResourceTags(resourceID *string, create, remove map[stri
 		if _, err := s.EC2Client.CreateTags(input); err != nil {
 			return errors.Wrapf(err, "failed to create tags for resource %q: %+v", *resourceID, create)
 		}
+		metrics.AWSCall.Inc()
+		metrics.CreateTags.Inc()
 	}
 
 	// If we have anything to remove
@@ -698,6 +718,8 @@ func (s *Service) UpdateResourceTags(resourceID *string, create, remove map[stri
 		if _, err := s.EC2Client.DeleteTags(input); err != nil {
 			return errors.Wrapf(err, "failed to delete tags for resource %q: %v", *resourceID, remove)
 		}
+		metrics.AWSCall.Inc()
+		metrics.DeleteTags.Inc()
 	}
 
 	return nil
@@ -714,6 +736,8 @@ func (s *Service) getInstanceENIs(instanceID string) ([]*ec2.NetworkInterface, e
 	}
 
 	output, err := s.EC2Client.DescribeNetworkInterfaces(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeNetworkInterfaces.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -727,6 +751,8 @@ func (s *Service) getImageRootDevice(imageID string) (*string, error) {
 	}
 
 	output, err := s.EC2Client.DescribeImages(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeImages.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -744,6 +770,8 @@ func (s *Service) getImageSnapshotSize(imageID string) (*int64, error) {
 	}
 
 	output, err := s.EC2Client.DescribeImages(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeImages.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -850,6 +878,8 @@ func (s *Service) getNetworkInterfaceSecurityGroups(interfaceID string) ([]strin
 	}
 
 	output, err := s.EC2Client.DescribeNetworkInterfaceAttribute(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeNetworkInterfaceAttribute.Inc()
 	if err != nil {
 		return nil, err
 	}
@@ -892,6 +922,8 @@ func (s *Service) attachSecurityGroupsToNetworkInterface(groups []string, interf
 	if _, err := s.EC2Client.ModifyNetworkInterfaceAttribute(input); err != nil {
 		return errors.Wrapf(err, "failed to modify interface %q to have security groups %v", interfaceID, totalGroups)
 	}
+	metrics.AWSCall.Inc()
+	metrics.ModifyNetworkInterfaceAttribute.Inc()
 	return nil
 }
 
@@ -916,6 +948,8 @@ func (s *Service) DetachSecurityGroupsFromNetworkInterface(groups []string, inte
 	if _, err := s.EC2Client.ModifyNetworkInterfaceAttribute(input); err != nil {
 		return errors.Wrapf(err, "failed to modify interface %q", interfaceID)
 	}
+	metrics.AWSCall.Inc()
+	metrics.ModifyNetworkInterfaceAttribute.Inc()
 	return nil
 }
 
@@ -1004,6 +1038,8 @@ func (s *Service) GetFilteredSecurityGroupID(securityGroup infrav1.AWSResourceRe
 	if err != nil {
 		return "", err
 	}
+	metrics.AWSCall.Inc()
+	metrics.DescribeSecurityGroups.Inc()
 
 	if len(sgs.SecurityGroups) == 0 {
 		return "", fmt.Errorf("failed to find security group matching filters: %q, reason: %w", filters, err)

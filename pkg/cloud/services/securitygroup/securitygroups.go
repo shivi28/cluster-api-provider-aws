@@ -18,6 +18,7 @@ package securitygroup
 
 import (
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -222,6 +223,8 @@ func (s *Service) describeSecurityGroupOverridesByID() (map[infrav1.SecurityGrou
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to describe security groups in vpc %q", s.scope.VPC().ID)
 	}
+	metrics.AWSCall.Inc()
+	metrics.DescribeSecurityGroups.Inc()
 
 	res := make(map[infrav1.SecurityGroupRole]*ec2.SecurityGroup, len(out.SecurityGroups))
 	for _, role := range s.roles {
@@ -306,6 +309,8 @@ func (s *Service) deleteSecurityGroup(sg *infrav1.SecurityGroup, typ string) err
 		record.Warnf(s.scope.InfraCluster(), "FailedDeleteSecurityGroup", "Failed to delete %s SecurityGroup %q: %v", typ, sg.ID, err)
 		return errors.Wrapf(err, "failed to delete security group %q", sg.ID)
 	}
+	metrics.AWSCall.Inc()
+	metrics.DeleteSecurityGroup.Inc()
 
 	record.Eventf(s.scope.InfraCluster(), "SuccessfulDeleteSecurityGroup", "Deleted %s SecurityGroup %q", typ, sg.ID)
 	s.scope.Info("Deleted security group", "security-group-id", sg.ID, "kind", typ)
@@ -331,6 +336,8 @@ func (s *Service) describeClusterOwnedSecurityGroups() ([]infrav1.SecurityGroup,
 		}
 		return true
 	})
+	metrics.AWSCall.Inc()
+	metrics.DescribeSecurityGroupsPages.Inc()
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to describe cluster-owned security groups in vpc %q", s.scope.VPC().ID)
 	}
@@ -346,6 +353,8 @@ func (s *Service) describeSecurityGroupsByName() (map[string]infrav1.SecurityGro
 	}
 
 	out, err := s.EC2Client.DescribeSecurityGroups(input)
+	metrics.AWSCall.Inc()
+	metrics.DescribeSecurityGroups.Inc()
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to describe security groups in vpc %q", s.scope.VPC().ID)
 	}
@@ -377,6 +386,8 @@ func (s *Service) createSecurityGroup(role infrav1.SecurityGroupRole, input *ec2
 			tags.BuildParamsToTagSpecification(ec2.ResourceTypeSecurityGroup, sgTags),
 		},
 	})
+	metrics.AWSCall.Inc()
+	metrics.CreateSecurityGroup.Inc()
 	if err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedCreateSecurityGroup", "Failed to create managed SecurityGroup for Role %q: %v", role, err)
 		return errors.Wrapf(err, "failed to create security group %q in vpc %q", role, aws.StringValue(input.VpcId))
@@ -402,7 +413,8 @@ func (s *Service) authorizeSecurityGroupIngressRules(id string, rules infrav1.In
 		record.Warnf(s.scope.InfraCluster(), "FailedAuthorizeSecurityGroupIngressRules", "Failed to authorize security group ingress rules %v for SecurityGroup %q: %v", rules, id, err)
 		return errors.Wrapf(err, "failed to authorize security group %q ingress rules: %v", id, rules)
 	}
-
+	metrics.AWSCall.Inc()
+	metrics.AuthorizeSecurityGroupIngress.Inc()
 	record.Eventf(s.scope.InfraCluster(), "SuccessfulAuthorizeSecurityGroupIngressRules", "Authorized security group ingress rules %v for SecurityGroup %q", rules, id)
 	return nil
 }
@@ -419,6 +431,8 @@ func (s *Service) revokeSecurityGroupIngressRules(id string, rules infrav1.Ingre
 		return errors.Wrapf(err, "failed to revoke security group %q ingress rules: %v", id, rules)
 	}
 
+	metrics.AWSCall.Inc()
+	metrics.RevokeSecurityGroupIngress.Inc()
 	record.Eventf(s.scope.InfraCluster(), "SuccessfulRevokeSecurityGroupIngressRules", "Revoked security group ingress rules %v for SecurityGroup %q", rules, id)
 	return nil
 }
@@ -430,6 +444,8 @@ func (s *Service) revokeAllSecurityGroupIngressRules(id string) error {
 	if err != nil {
 		return err
 	}
+	metrics.AWSCall.Inc()
+	metrics.DescribeSecurityGroups.Inc()
 
 	for _, sg := range securityGroups.SecurityGroups {
 		if len(sg.IpPermissions) > 0 {
@@ -441,6 +457,8 @@ func (s *Service) revokeAllSecurityGroupIngressRules(id string) error {
 				record.Warnf(s.scope.InfraCluster(), "FailedRevokeSecurityGroupIngressRules", "Failed to revoke all security group ingress rules for SecurityGroup %q: %v", *sg.GroupId, err)
 				return err
 			}
+			metrics.AWSCall.Inc()
+			metrics.RevokeSecurityGroupIngress.Inc()
 			record.Eventf(s.scope.InfraCluster(), "SuccessfulRevokeSecurityGroupIngressRules", "Revoked all security group ingress rules for SecurityGroup %q", *sg.GroupId)
 		}
 	}

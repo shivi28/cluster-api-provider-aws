@@ -134,6 +134,7 @@ func (r *AWSClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	if err != nil {
 		return reconcile.Result{}, err
 	}
+	// TODO: can remove it, as it's not a direct call
 
 	if cluster == nil {
 		log.Info("Cluster Controller has not yet set OwnerRef")

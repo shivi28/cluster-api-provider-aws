@@ -18,6 +18,7 @@ package network
 
 import (
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -33,6 +34,8 @@ import (
 
 func (s *Service) getOrAllocateAddresses(num int, role string) (eips []string, err error) {
 	out, err := s.describeAddresses(role)
+	metrics.AWSCall.Inc()
+	metrics.DescribeAddresses.Inc()
 	if err != nil {
 		record.Eventf(s.scope.InfraCluster(), "FailedDescribeAddresses", "Failed to query addresses for role %q: %v", role, err)
 		return nil, errors.Wrap(err, "failed to query addresses")
@@ -63,6 +66,8 @@ func (s *Service) allocateAddress(role string) (string, error) {
 			tagSpecifications,
 		},
 	})
+	metrics.AWSCall.Inc()
+	metrics.AllocateAddress.Inc()
 	if err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedAllocateEIP", "Failed to allocate Elastic IP for %q: %v", role, err)
 		return "", errors.Wrap(err, "failed to allocate Elastic IP")

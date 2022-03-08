@@ -17,6 +17,7 @@ limitations under the License.
 package network
 
 import (
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -94,6 +95,8 @@ func (s *Service) reconcileRouteTables() error {
 							}); err != nil {
 								return false, err
 							}
+							metrics.AWSCall.Inc()
+							metrics.ReplaceRoute.Inc()
 							return true, nil
 						}); err != nil {
 							record.Warnf(s.scope.InfraCluster(), "FailedReplaceRoute", "Failed to replace outdated route on managed RouteTable %q: %v", *rt.RouteTableId, err)
@@ -190,6 +193,8 @@ func (s *Service) deleteRouteTables() error {
 				record.Warnf(s.scope.InfraCluster(), "FailedDisassociateRouteTable", "Failed to disassociate managed RouteTable %q from Subnet %q: %v", *rt.RouteTableId, *as.SubnetId, err)
 				return errors.Wrapf(err, "failed to disassociate route table %q from subnet %q", *rt.RouteTableId, *as.SubnetId)
 			}
+			metrics.AWSCall.Inc()
+			metrics.DisassociateRouteTable.Inc()
 
 			record.Eventf(s.scope.InfraCluster(), "SuccessfulDisassociateRouteTable", "Disassociated managed RouteTable %q from subnet %q", *rt.RouteTableId, *as.SubnetId)
 			s.scope.V(2).Info("Deleted association between route table and subnet", "route-table-id", *rt.RouteTableId, "subnet-id", *as.SubnetId)
@@ -199,6 +204,8 @@ func (s *Service) deleteRouteTables() error {
 			record.Warnf(s.scope.InfraCluster(), "FailedDeleteRouteTable", "Failed to delete managed RouteTable %q: %v", *rt.RouteTableId, err)
 			return errors.Wrapf(err, "failed to delete route table %q", *rt.RouteTableId)
 		}
+		metrics.AWSCall.Inc()
+		metrics.DeleteRouteTable.Inc()
 
 		record.Eventf(s.scope.InfraCluster(), "SuccessfulDeleteRouteTable", "Deleted managed RouteTable %q", *rt.RouteTableId)
 		s.scope.Info("Deleted route table", "route-table-id", *rt.RouteTableId)
@@ -223,6 +230,8 @@ func (s *Service) describeVpcRouteTables() ([]*ec2.RouteTable, error) {
 		return nil, errors.Wrapf(err, "failed to describe route tables in vpc %q", s.scope.VPC().ID)
 	}
 
+	metrics.AWSCall.Inc()
+	metrics.DescribeRouteTables.Inc()
 	return out.RouteTables, nil
 }
 
@@ -232,6 +241,8 @@ func (s *Service) createRouteTableWithRoutes(routes []*ec2.Route, isPublic bool,
 		TagSpecifications: []*ec2.TagSpecification{
 			tags.BuildParamsToTagSpecification(ec2.ResourceTypeRouteTable, s.getRouteTableTagParams(services.TemporaryResourceID, isPublic, zone))},
 	})
+	metrics.AWSCall.Inc()
+	metrics.CreateRouteTable.Inc()
 	if err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedCreateRouteTable", "Failed to create managed RouteTable: %v", err)
 		return nil, errors.Wrapf(err, "failed to create route table in vpc %q", s.scope.VPC().ID)
@@ -255,6 +266,8 @@ func (s *Service) createRouteTableWithRoutes(routes []*ec2.Route, isPublic bool,
 			}); err != nil {
 				return false, err
 			}
+			metrics.AWSCall.Inc()
+			metrics.CreateRoute.Inc()
 			return true, nil
 		}, awserrors.RouteTableNotFound, awserrors.NATGatewayNotFound, awserrors.GatewayNotFound); err != nil {
 			// TODO(vincepri): cleanup the route table if this fails.
@@ -274,6 +287,8 @@ func (s *Service) associateRouteTable(rt *infrav1.RouteTable, subnetID string) e
 		RouteTableId: aws.String(rt.ID),
 		SubnetId:     aws.String(subnetID),
 	})
+	metrics.AWSCall.Inc()
+	metrics.AssociateRouteTable.Inc()
 	if err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedAssociateRouteTable", "Failed to associate managed RouteTable %q with Subnet %q: %v", rt.ID, subnetID, err)
 		return errors.Wrapf(err, "failed to associate route table %q to subnet %q", rt.ID, subnetID)

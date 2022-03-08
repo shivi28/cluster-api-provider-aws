@@ -18,6 +18,7 @@ package network
 
 import (
 	"fmt"
+	"sigs.k8s.io/cluster-api-provider-aws/pkg/cloud/metrics"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -193,6 +194,8 @@ func (s *Service) describeNatGatewaysBySubnet() (map[string]*ec2.NatGateway, err
 		return nil, errors.Wrapf(err, "failed to describe NAT gateways with VPC ID %q", s.scope.VPC().ID)
 	}
 
+	metrics.AWSCall.Inc()
+	metrics.DescribeNatGatewaysPages.Inc()
 	return gateways, nil
 }
 
@@ -249,6 +252,8 @@ func (s *Service) createNatGateway(subnetID, ip string) (*ec2.NatGateway, error)
 		}); err != nil {
 			return false, err
 		}
+		metrics.AWSCall.Inc()
+		metrics.CreateNatGateway.Inc()
 		return true, nil
 	}, awserrors.InvalidSubnet); err != nil {
 		record.Warnf(s.scope.InfraCluster(), "FailedCreateNATGateway", "Failed to create new NAT Gateway: %v", err)
@@ -260,6 +265,8 @@ func (s *Service) createNatGateway(subnetID, ip string) (*ec2.NatGateway, error)
 	if err := s.EC2Client.WaitUntilNatGatewayAvailable(wReq); err != nil {
 		return nil, errors.Wrapf(err, "failed to wait for nat gateway %q in subnet %q", *out.NatGateway.NatGatewayId, subnetID)
 	}
+	metrics.AWSCall.Inc()
+	metrics.WaitUntilNatGatewayAvailable.Inc()
 
 	s.scope.Info("Created NAT gateway for subnet", "nat-gateway-id", *out.NatGateway.NatGatewayId, "subnet-id", subnetID)
 	return out.NatGateway, nil
@@ -273,6 +280,9 @@ func (s *Service) deleteNatGateway(id string) error {
 		record.Warnf(s.scope.InfraCluster(), "FailedDeleteNATGateway", "Failed to delete NAT Gateway %q previously attached to VPC %q: %v", id, s.scope.VPC().ID, err)
 		return errors.Wrapf(err, "failed to delete nat gateway %q", id)
 	}
+	metrics.AWSCall.Inc()
+	metrics.DeleteNatGateway.Inc()
+
 	record.Eventf(s.scope.InfraCluster(), "SuccessfulDeleteNATGateway", "Deleted NAT Gateway %q previously attached to VPC %q", id, s.scope.VPC().ID)
 	s.scope.Info("Deleted NAT gateway in VPC", "nat-gateway-id", id, "vpc-id", s.scope.VPC().ID)
 
@@ -285,6 +295,9 @@ func (s *Service) deleteNatGateway(id string) error {
 		if err != nil {
 			return false, err
 		}
+
+		metrics.AWSCall.Inc()
+		metrics.DescribeNatGateway.Inc()
 
 		if out == nil || len(out.NatGateways) == 0 {
 			return false, errors.New(fmt.Sprintf("no NAT gateway returned for id %q", id))
