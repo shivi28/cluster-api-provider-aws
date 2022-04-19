@@ -18,6 +18,7 @@ package network
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -41,6 +42,8 @@ const (
 )
 
 func (s *Service) reconcileVPC() error {
+	return fmt.Errorf("dummy error with conditions %+v", time.Now())
+
 	s.scope.V(2).Info("Reconciling VPC")
 
 	// If the ID is not nil, VPC is either managed or unmanaged but should exist in the AWS.

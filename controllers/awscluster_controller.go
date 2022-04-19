@@ -19,11 +19,12 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"net"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	"time"
 
 	"github.com/go-logr/logr"
-	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -32,7 +33,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
@@ -53,7 +53,6 @@ import (
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/annotations"
 	"sigs.k8s.io/cluster-api/util/conditions"
-	"sigs.k8s.io/cluster-api/util/patch"
 	"sigs.k8s.io/cluster-api/util/predicates"
 )
 
@@ -119,7 +118,7 @@ func (r *AWSClusterReconciler) getSecurityGroupService(scope scope.ClusterScope)
 
 func (r *AWSClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (_ ctrl.Result, reterr error) {
 	log := ctrl.LoggerFrom(ctx)
-
+	log.Info("Reconciling AWSCluster")
 	// Fetch the AWSCluster instance
 	awsCluster := &infrav1.AWSCluster{}
 	err := r.Get(ctx, req.NamespacedName, awsCluster)
@@ -147,22 +146,22 @@ func (r *AWSClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	log = log.WithValues("cluster", cluster.Name)
-	helper, err := patch.NewHelper(awsCluster, r.Client)
-	if err != nil {
-		return reconcile.Result{}, errors.Wrap(err, "failed to init patch helper")
-	}
+	//helper, err := patch.NewHelper(awsCluster, r.Client)
+	//if err != nil {
+	//	return reconcile.Result{}, errors.Wrap(err, "failed to init patch helper")
+	//}
 
 	defer func() {
-		e := helper.Patch(
-			context.TODO(),
-			awsCluster,
-			patch.WithOwnedConditions{Conditions: []clusterv1.ConditionType{
-				infrav1.PrincipalCredentialRetrievedCondition,
-				infrav1.PrincipalUsageAllowedCondition,
-			}})
-		if e != nil {
-			fmt.Println(e.Error())
-		}
+		//e := helper.Patch(
+		//	context.TODO(),
+		//	awsCluster,
+		//	patch.WithOwnedConditions{Conditions: []clusterv1.ConditionType{
+		//		infrav1.PrincipalCredentialRetrievedCondition,
+		//		infrav1.PrincipalUsageAllowedCondition,
+		//	}})
+		//if e != nil {
+		//	fmt.Println(e.Error())
+		//}
 	}()
 
 	// Create the scope.
@@ -180,9 +179,9 @@ func (r *AWSClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 	// Always close the scope when exiting this function so we can persist any AWSCluster changes.
 	defer func() {
-		if err := clusterScope.Close(); err != nil && reterr == nil {
-			reterr = err
-		}
+		//if err := clusterScope.Close(); err != nil && reterr == nil {
+		//	reterr = err
+		//}
 	}()
 
 	// Handle deleted clusters
@@ -249,9 +248,9 @@ func (r *AWSClusterReconciler) reconcileNormal(clusterScope *scope.ClusterScope)
 	// If the AWSCluster doesn't have our finalizer, add it.
 	controllerutil.AddFinalizer(awsCluster, infrav1.ClusterFinalizer)
 	// Register the finalizer immediately to avoid orphaning AWS resources on delete
-	if err := clusterScope.PatchObject(); err != nil {
-		return reconcile.Result{}, err
-	}
+	//if err := clusterScope.PatchObject(); err != nil {
+	//	return reconcile.Result{}, err
+	//}
 
 	ec2Service := r.getEC2Service(clusterScope)
 	elbService := r.getELBService(clusterScope)
@@ -345,8 +344,8 @@ func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Ma
 		WithEventFilter(
 			predicate.Funcs{
 				// Avoid reconciling if the event triggering the reconciliation is related to incremental status updates
-				// for AWSCluster resources only
 				UpdateFunc: func(e event.UpdateEvent) bool {
+					log.Info("Update function called","e.ObjectOld.GetObjectKind().GroupVersionKind().Kind",e.ObjectOld.GetObjectKind().GroupVersionKind().Kind, "e", e)
 					if e.ObjectOld.GetObjectKind().GroupVersionKind().Kind != "AWSCluster" {
 						return true
 					}
@@ -360,10 +359,23 @@ func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Ma
 					oldCluster.ObjectMeta.ResourceVersion = ""
 					newCluster.ObjectMeta.ResourceVersion = ""
 
-					return !cmp.Equal(oldCluster, newCluster)
+					log.Info("\n\n\n XXXXXXXXXXXXX oldcluster \n\n\n\n", "\n\n\n oldCluster %+v \n\n\n", oldCluster)
+					log.Info("\n\n\n XXXXXXXXXXXXX newCluster \n\n\n\n", "\n\n\n newCluster %+v \n\n\n", newCluster)
+					x := cmp.Equal(oldCluster, newCluster)
+					if x{
+						log.Info("\n\n\n XXXXXXXXXXXXX I am true \n\n\n\n")
+					}else{
+						log.Info("\n\n\n XXXXXXXXXXXXX I am false \n\n\n\n")
+
+					}
+					return !x
+					// false = updateFunc returns true
+					// true = updateFunc returns false
 				},
 			},
 		).
+
+		//. in case of update status our predicate false
 		WithEventFilter(predicates.ResourceIsNotExternallyManaged(log)).
 		Build(r)
 	if err != nil {

@@ -26,11 +26,15 @@ import (
 
 // ReconcileNetwork reconciles the network of the given cluster.
 func (s *Service) ReconcileNetwork() (err error) {
-	s.scope.V(2).Info("Reconciling network for cluster", "cluster-name", s.scope.Name(), "cluster-namespace", s.scope.Namespace())
+	s.scope.Info("Reconciling network for cluster", "cluster-name", s.scope.Name(), "cluster-namespace", s.scope.Namespace())
 
 	// VPC.
 	if err := s.reconcileVPC(); err != nil {
-		conditions.MarkFalse(s.scope.InfraCluster(), infrav1.VpcReadyCondition, infrav1.VpcReconciliationFailedReason, infrautilconditions.ErrorConditionAfterInit(s.scope.ClusterObj()), err.Error())
+		s.scope.Info("Conditions value", "conditions before %+v", s.scope.InfraCluster().GetConditions())
+		//conditions.MarkTrue(s.scope.InfraCluster(), infrav1.VpcReadyCondition)
+		//conditions.MarkFalse(s.scope.InfraCluster(), infrav1.VpcReadyCondition, infrav1.VpcReconciliationFailedReason, infrautilconditions.ErrorConditionAfterInit(s.scope.ClusterObj()), err.Error())
+		s.scope.Info("Conditions value", "conditions after %+v", s.scope.InfraCluster().GetConditions())
+		//conditions.MarkFalse(s.scope.InfraCluster(), infrav1.VpcReadyCondition, infrav1.VpcReconciliationFailedReason, infrautilconditions.ErrorConditionAfterInit(s.scope.ClusterObj()), err.Error())
 		return err
 	}
 	conditions.MarkTrue(s.scope.InfraCluster(), infrav1.VpcReadyCondition)

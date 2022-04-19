@@ -1,0 +1,153 @@
+I0418 14:06:51.256907      14 request.go:665] Waited for 1.0274771s due to client-side throttling, not priority and fairness, request: GET:https://10.96.0.1:443/apis/node.k8s.io/v1?timeout=32s
+I0418 14:06:51.512716      14 logr.go:261] controller-runtime/metrics "msg"="Metrics server is starting to listen"  "addr"="0.0.0.0:8080"
+I0418 14:06:51.514313      14 logr.go:261] setup "msg"="enabling EKS controllers"  
+I0418 14:06:51.515322      14 logr.go:261] setup "msg"="AutoControllerIdentityCreator enabled"  
+I0418 14:06:51.515484      14 logr.go:261] controller-runtime/builder "msg"="skip registering a mutating webhook, object does not implement admission.Defaulter or WithDefaulter wasn't called"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSMachineTemplate"}
+I0418 14:06:51.515697      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSMachineTemplate"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsmachinetemplate"
+I0418 14:06:51.516158      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsmachinetemplate" 
+I0418 14:06:51.518522      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/convert" 
+I0418 14:06:51.518757      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSMachineTemplate"}
+I0418 14:06:51.519349      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSCluster"} "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awscluster"
+I0418 14:06:51.519884      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awscluster" 
+I0418 14:06:51.520071      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSCluster"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awscluster"
+I0418 14:06:51.520179      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awscluster" 
+I0418 14:06:51.521215      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSCluster"}
+I0418 14:06:51.521286      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterTemplate"} "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustertemplate"
+I0418 14:06:51.521538      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustertemplate" 
+I0418 14:06:51.521777      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterTemplate"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustertemplate"
+I0418 14:06:51.522316      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustertemplate" 
+I0418 14:06:51.522782      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterTemplate"}
+I0418 14:06:51.522850      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterControllerIdentity"} "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustercontrolleridentity"
+I0418 14:06:51.523075      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustercontrolleridentity" 
+I0418 14:06:51.523154      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterControllerIdentity"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustercontrolleridentity"
+I0418 14:06:51.523226      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclustercontrolleridentity" 
+I0418 14:06:51.523336      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterControllerIdentity"}
+I0418 14:06:51.523401      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterRoleIdentity"} "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterroleidentity"
+I0418 14:06:51.527033      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterroleidentity" 
+I0418 14:06:51.527457      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterRoleIdentity"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterroleidentity"
+I0418 14:06:51.528284      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterroleidentity" 
+I0418 14:06:51.528712      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterRoleIdentity"}
+I0418 14:06:51.528757      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterStaticIdentity"} "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterstaticidentity"
+I0418 14:06:51.528853      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterstaticidentity" 
+I0418 14:06:51.529053      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterStaticIdentity"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterstaticidentity"
+I0418 14:06:51.529285      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsclusterstaticidentity" 
+I0418 14:06:51.529635      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSClusterStaticIdentity"}
+I0418 14:06:51.530646      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSMachine"} "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsmachine"
+I0418 14:06:51.532158      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-infrastructure-cluster-x-k8s-io-v1beta1-awsmachine" 
+I0418 14:06:51.533530      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSMachine"} "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsmachine"
+I0418 14:06:51.534036      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-infrastructure-cluster-x-k8s-io-v1beta1-awsmachine" 
+I0418 14:06:51.534224      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"infrastructure.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSMachine"}
+I0418 14:06:51.534392      14 logr.go:261] setup "msg"="enabling EKS webhooks"  
+I0418 14:06:51.534421      14 logr.go:261] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"controlplane.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSManagedControlPlane"} "path"="/mutate-controlplane-cluster-x-k8s-io-v1beta1-awsmanagedcontrolplane"
+I0418 14:06:51.534920      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/mutate-controlplane-cluster-x-k8s-io-v1beta1-awsmanagedcontrolplane" 
+I0418 14:06:51.535213      14 logr.go:261] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"controlplane.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSManagedControlPlane"} "path"="/validate-controlplane-cluster-x-k8s-io-v1beta1-awsmanagedcontrolplane"
+I0418 14:06:51.535559      14 server.go:146] controller-runtime/webhook "msg"="Registering webhook" "path"="/validate-controlplane-cluster-x-k8s-io-v1beta1-awsmanagedcontrolplane" 
+I0418 14:06:51.535767      14 logr.go:261] controller-runtime/builder "msg"="Conversion webhook enabled"  "GVK"={"Group":"controlplane.cluster.x-k8s.io","Version":"v1beta1","Kind":"AWSManagedControlPlane"}
+I0418 14:06:51.535792      14 logr.go:261] setup "msg"="starting manager"  "version"=""
+I0418 14:06:51.535917      14 server.go:214] controller-runtime/webhook/webhooks "msg"="Starting webhook server"  
+I0418 14:06:51.536064      14 internal.go:362]  "msg"="Starting server" "addr"={"IP":"::","Port":9440,"Zone":""} "kind"="health probe" 
+I0418 14:06:51.536156      14 internal.go:362]  "msg"="Starting server" "addr"={"IP":"::","Port":8080,"Zone":""} "kind"="metrics" "path"="/metrics" 
+I0418 14:06:51.536341      14 logr.go:261] controller-runtime/certwatcher "msg"="Updated current TLS certificate"  
+I0418 14:06:51.537009      14 logr.go:261] controller-runtime/webhook "msg"="Serving webhook server"  "host"="" "port"=9443
+I0418 14:06:51.537165      14 logr.go:261] controller-runtime/certwatcher "msg"="Starting certificate watcher"  
+I0418 14:06:51.637855      14 leaderelection.go:248] attempting to acquire leader lease capa-system/controller-leader-elect-capa...
+I0418 14:07:08.393508      14 leaderelection.go:258] successfully acquired lease capa-system/controller-leader-elect-capa
+I0418 14:07:08.393834      14 controller.go:178] controller/awsmachine "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" "source"="kind source: *v1beta1.AWSMachine"
+I0418 14:07:08.393886      14 controller.go:178] controller/awsmachine "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" "source"="kind source: *v1beta1.Machine"
+I0418 14:07:08.393914      14 controller.go:178] controller/awsmachine "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" "source"="kind source: *v1beta1.AWSCluster"
+I0418 14:07:08.393943      14 controller.go:178] controller/awsmachine "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" "source"="kind source: *v1beta1.Cluster"
+I0418 14:07:08.393967      14 controller.go:186] controller/awsmachine "msg"="Starting Controller" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" 
+I0418 14:07:08.394033      14 controller.go:178] controller/awsmanagedcontrolplane "msg"="Starting EventSource" "reconciler group"="controlplane.cluster.x-k8s.io" "reconciler kind"="AWSManagedControlPlane" "source"="kind source: *v1beta1.AWSManagedControlPlane"
+I0418 14:07:08.394063      14 controller.go:178] controller/awsmanagedcontrolplane "msg"="Starting EventSource" "reconciler group"="controlplane.cluster.x-k8s.io" "reconciler kind"="AWSManagedControlPlane" "source"="kind source: *v1beta1.Cluster"
+I0418 14:07:08.394357      14 controller.go:178] controller/awscluster "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" "source"="kind source: *v1beta1.AWSCluster"
+I0418 14:07:08.394402      14 controller.go:178] controller/eksconfig "msg"="Starting EventSource" "reconciler group"="bootstrap.cluster.x-k8s.io" "reconciler kind"="EKSConfig" "source"="kind source: *v1beta1.EKSConfig"
+I0418 14:07:08.394442      14 controller.go:178] controller/eksconfig "msg"="Starting EventSource" "reconciler group"="bootstrap.cluster.x-k8s.io" "reconciler kind"="EKSConfig" "source"="kind source: *v1beta1.Machine"
+I0418 14:07:08.394396      14 controller.go:178] controller/awscluster "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" "source"="kind source: *v1beta1.AWSManagedControlPlane"
+I0418 14:07:08.394473      14 controller.go:178] controller/eksconfig "msg"="Starting EventSource" "reconciler group"="bootstrap.cluster.x-k8s.io" "reconciler kind"="EKSConfig" "source"="kind source: *v1beta1.Cluster"
+I0418 14:07:08.394487      14 controller.go:186] controller/awscluster "msg"="Starting Controller" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:07:08.394499      14 controller.go:186] controller/eksconfig "msg"="Starting Controller" "reconciler group"="bootstrap.cluster.x-k8s.io" "reconciler kind"="EKSConfig" 
+I0418 14:07:08.395318      14 controller.go:178] controller/awscluster "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" "source"="kind source: *v1beta1.AWSCluster"
+I0418 14:07:08.395797      14 controller.go:178] controller/awscluster "msg"="Starting EventSource" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" "source"="kind source: *v1beta1.Cluster"
+I0418 14:07:08.395823      14 controller.go:186] controller/awscluster "msg"="Starting Controller" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:07:08.396333      14 controller.go:186] controller/awsmanagedcontrolplane "msg"="Starting Controller" "reconciler group"="controlplane.cluster.x-k8s.io" "reconciler kind"="AWSManagedControlPlane" 
+I0418 14:07:08.495980      14 controller.go:220] controller/awsmachine "msg"="Starting workers" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" "worker count"=1
+I0418 14:07:08.496580      14 controller.go:220] controller/awscluster "msg"="Starting workers" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" "worker count"=5
+I0418 14:07:08.496730      14 controller.go:220] controller/awsmanagedcontrolplane "msg"="Starting workers" "reconciler group"="controlplane.cluster.x-k8s.io" "reconciler kind"="AWSManagedControlPlane" "worker count"=5
+I0418 14:07:08.597241      14 controller.go:220] controller/awscluster "msg"="Starting workers" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" "worker count"=1
+I0418 14:07:08.597547      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:07:08.597841      14 controller.go:220] controller/eksconfig "msg"="Starting workers" "reconciler group"="bootstrap.cluster.x-k8s.io" "reconciler kind"="EKSConfig" "worker count"=5
+I0418 14:07:08.605712      14 awscluster_controller.go:245] controller/awscluster "msg"="Reconciling AWSCluster" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:07:08.607309      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:07:08.609184      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:07:08.614520      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:07:08.614602      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:07:08.653857      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:07:08.653924      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:07:08.679086      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:07:08.679140      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+E0418 14:07:08.710494      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="dummy error 2022-04-18 14:07:08.6484226 +0000 UTC m=+18.492800501" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:07:08.710613      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:07:08.712051      14 awscluster_controller.go:245] controller/awscluster "msg"="Reconciling AWSCluster" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+E0418 14:07:08.714363      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="dummy error 2022-04-18 14:07:08.7124813 +0000 UTC m=+18.556859101" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:08:08.642750      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:08:08.643422      14 awscluster_controller.go:245] controller/awscluster "msg"="Reconciling AWSCluster" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+E0418 14:08:08.645858      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="dummy error 2022-04-18 14:08:08.6442469 +0000 UTC m=+78.556736901" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:08:56.124355      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:08:56.125120      14 awscluster_controller.go:198] controller/awscluster "msg"="Reconciling AWSCluster delete" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:08:56.137360      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:08:56.138949      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+2022/04/18 14:08:56 http: TLS handshake error from 10.244.0.1:22511: EOF
+2022/04/18 14:08:56 http: TLS handshake error from 10.244.0.1:61832: read tcp 10.244.0.29:9443->10.244.0.1:61832: read: connection reset by peer
+2022/04/18 14:08:56 http: TLS handshake error from 10.244.0.1:5291: EOF
+2022/04/18 14:08:56 http: TLS handshake error from 10.244.0.1:55676: EOF
+I0418 14:08:56.333015      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:08:56.333165      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:08:56.399645      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:08:56.399719      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:08:56.429571      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:08:56.429616      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+E0418 14:08:57.824541      14 network.go:89] controller/awscluster "msg"="non-fatal: VPC ID is missing, " "error"=null "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+E0418 14:08:58.793923      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="awsclusters.infrastructure.cluster.x-k8s.io \"test-18-4-1-poc\" not found" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:08:58.794014      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+[AWSCluster.infrastructure.cluster.x-k8s.io "test-18-4-1-poc" not found, awsclusters.infrastructure.cluster.x-k8s.io "test-18-4-1-poc" not found]
+E0418 14:10:53.128323      14 awscluster_controller.go:412]  "msg"="Failed to get AWS cluster" "error"="AWSCluster.infrastructure.cluster.x-k8s.io \"test-18-4-1-poc\" not found" "cluster"="test-18-4-1-poc" "namespace"="default" "objectMapper"="clusterToAWSCluster" 
+I0418 14:10:53.175937      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:10:53.180338      14 awscluster_controller.go:140] controller/awscluster "msg"="Cluster Controller has not yet set OwnerRef" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+2022/04/18 14:10:53 http: TLS handshake error from 10.244.0.1:64668: EOF
+I0418 14:10:53.215271      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:10:53.215726      14 awscluster_controller.go:245] controller/awscluster "msg"="Reconciling AWSCluster" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+2022/04/18 14:10:53 http: TLS handshake error from 10.244.0.1:38480: EOF
+2022/04/18 14:10:53 http: TLS handshake error from 10.244.0.1:6284: EOF
+E0418 14:10:53.363093      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="dummy error 2022-04-18 14:10:53.2502129 +0000 UTC m=+243.369895201" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:10:53.363373      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:10:53.364132      14 awscluster_controller.go:245] controller/awscluster "msg"="Reconciling AWSCluster" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+E0418 14:10:53.382690      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="dummy error 2022-04-18 14:10:53.3648782 +0000 UTC m=+243.484555601" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:10:53.680369      14 awsmachine_controller.go:160] controller/awsmachine "msg"="Machine Controller has not yet set OwnerRef" "name"="test-18-4-1-poc-md-0-5c62s" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" 
+I0418 14:10:53.716794      14 awsmachine_controller.go:160] controller/awsmachine "msg"="Machine Controller has not yet set OwnerRef" "name"="test-18-4-1-poc-md-0-5c62s" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" 
+I0418 14:10:53.744323      14 awsmachine_controller.go:160] controller/awsmachine "msg"="Machine Controller has not yet set OwnerRef" "name"="test-18-4-1-poc-md-0-5c62s" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" 
+I0418 14:10:53.769046      14 awsmachine_controller.go:160] controller/awsmachine "msg"="Machine Controller has not yet set OwnerRef" "name"="test-18-4-1-poc-md-0-5c62s" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSMachine" 
+I0418 14:10:53.857258      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:10:53.857342      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:10:53.915769      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:10:53.915857      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:10:53.973278      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:10:53.973434      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:11:53.295437      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:11:53.295760      14 awscluster_controller.go:245] controller/awscluster "msg"="Reconciling AWSCluster" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+E0418 14:11:53.297501      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="dummy error 2022-04-18 14:11:53.29674 +0000 UTC m=+303.484628501" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:13:59.073904      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:13:59.078228      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:13:59.078309      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:13:59.089023      14 awscluster_controller.go:198] controller/awscluster "msg"="Reconciling AWSCluster delete" "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:13:59.243540      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:13:59.243598      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:13:59.274679      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:13:59.274769      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+I0418 14:13:59.317184      14 awsmachine_controller.go:432]  "msg"="Reconciling AWSMachine"  
+I0418 14:13:59.317296      14 awsmachine_controller.go:448]  "msg"="Cluster infrastructure is not ready yet"  
+E0418 14:14:01.335801      14 network.go:89] controller/awscluster "msg"="non-fatal: VPC ID is missing, " "error"=null "cluster"="test-18-4-1-poc" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+[AWSCluster.infrastructure.cluster.x-k8s.io "test-18-4-1-poc" not found, awsclusters.infrastructure.cluster.x-k8s.io "test-18-4-1-poc" not found]
+E0418 14:14:03.160964      14 controller.go:317] controller/awscluster "msg"="Reconciler error" "error"="awsclusters.infrastructure.cluster.x-k8s.io \"test-18-4-1-poc\" not found" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+I0418 14:14:03.163308      14 awscluster_controller.go:122] controller/awscluster "msg"="Reconciling AWSCluster" "name"="test-18-4-1-poc" "namespace"="default" "reconciler group"="infrastructure.cluster.x-k8s.io" "reconciler kind"="AWSCluster" 
+Exiting with code 143
+rpc error: code = NotFound desc = an error occurred when try to find container "1519d83adaf2fa58de514b7b17f90c7b92d361a6f0151a522ee2ae69072fbe41": not found

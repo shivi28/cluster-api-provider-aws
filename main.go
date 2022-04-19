@@ -21,6 +21,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"k8s.io/client-go/util/workqueue"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
@@ -181,7 +182,9 @@ func main() {
 		Recorder:         mgr.GetEventRecorderFor("awsmachine-controller"),
 		Endpoints:        AWSServiceEndpoints,
 		WatchFilterValue: watchFilterValue,
-	}).SetupWithManager(ctx, mgr, controller.Options{MaxConcurrentReconciles: awsMachineConcurrency, RecoverPanic: true}); err != nil {
+	}).SetupWithManager(ctx, mgr, controller.Options{MaxConcurrentReconciles: 1, RecoverPanic: true,
+		RateLimiter: workqueue.NewItemExponentialFailureRateLimiter(1*time.Minute, 10000*time.Second),
+	}); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "AWSMachine")
 		os.Exit(1)
 	}
@@ -190,7 +193,9 @@ func main() {
 		Recorder:         mgr.GetEventRecorderFor("awscluster-controller"),
 		Endpoints:        AWSServiceEndpoints,
 		WatchFilterValue: watchFilterValue,
-	}).SetupWithManager(ctx, mgr, controller.Options{MaxConcurrentReconciles: awsClusterConcurrency, RecoverPanic: true}); err != nil {
+	}).SetupWithManager(ctx, mgr, controller.Options{MaxConcurrentReconciles: 1, RecoverPanic: true,
+		RateLimiter: workqueue.NewItemExponentialFailureRateLimiter(1*time.Minute, 10000*time.Second),
+	}); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "AWSCluster")
 		os.Exit(1)
 	}
