@@ -53,7 +53,6 @@ import (
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/annotations"
 	"sigs.k8s.io/cluster-api/util/conditions"
-	"sigs.k8s.io/cluster-api/util/patch"
 	"sigs.k8s.io/cluster-api/util/predicates"
 )
 
@@ -147,23 +146,23 @@ func (r *AWSClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	log = log.WithValues("cluster", cluster.Name)
-	helper, err := patch.NewHelper(awsCluster, r.Client)
-	if err != nil {
-		return reconcile.Result{}, errors.Wrap(err, "failed to init patch helper")
-	}
+	//helper, err := patch.NewHelper(awsCluster, r.Client)
+	//if err != nil {
+	//	return reconcile.Result{}, errors.Wrap(err, "failed to init patch helper")
+	//}
 
-	defer func() {
-		e := helper.Patch(
-			context.TODO(),
-			awsCluster,
-			patch.WithOwnedConditions{Conditions: []clusterv1.ConditionType{
-				infrav1.PrincipalCredentialRetrievedCondition,
-				infrav1.PrincipalUsageAllowedCondition,
-			}})
-		if e != nil {
-			fmt.Println(e.Error())
-		}
-	}()
+	//defer func() {
+	//	e := helper.Patch(
+	//		context.TODO(),
+	//		awsCluster,
+	//		patch.WithOwnedConditions{Conditions: []clusterv1.ConditionType{
+	//			infrav1.PrincipalCredentialRetrievedCondition,
+	//			infrav1.PrincipalUsageAllowedCondition,
+	//		}})
+	//	if e != nil {
+	//		fmt.Println(e.Error())
+	//	}
+	//}()
 
 	// Create the scope.
 	clusterScope, err := scope.NewClusterScope(scope.ClusterScopeParams{
@@ -190,6 +189,7 @@ func (r *AWSClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return r.reconcileDelete(clusterScope)
 	}
 
+	return ctrl.Result{}, fmt.Errorf("dummy error")
 	// Handle non-deleted clusters
 	return r.reconcileNormal(clusterScope)
 }
@@ -335,7 +335,7 @@ func (r *AWSClusterReconciler) reconcileNormal(clusterScope *scope.ClusterScope)
 	awsCluster.Status.Ready = true
 	return reconcile.Result{}, nil
 }
-
+var counter = 0;
 func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, options controller.Options) error {
 	log := ctrl.LoggerFrom(ctx)
 	controller, err := ctrl.NewControllerManagedBy(mgr).
@@ -347,6 +347,11 @@ func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Ma
 				// Avoid reconciling if the event triggering the reconciliation is related to incremental status updates
 				// for AWSCluster resources only
 				UpdateFunc: func(e event.UpdateEvent) bool {
+					log.Info("Called update function", "counter %+v", counter)
+					counter++
+					log.Info("UpdateFunc","old object",e.ObjectOld)
+					log.Info("UpdateFunc","new object",e.ObjectNew)
+
 					if e.ObjectOld.GetObjectKind().GroupVersionKind().Kind != "AWSCluster" {
 						return true
 					}
@@ -360,7 +365,13 @@ func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Ma
 					oldCluster.ObjectMeta.ResourceVersion = ""
 					newCluster.ObjectMeta.ResourceVersion = ""
 
-					return !cmp.Equal(oldCluster, newCluster)
+					x :=cmp.Equal(oldCluster, newCluster)
+					if x {
+						log.Info("UpdateFunc", "Value of x is ", x)
+					}else{
+						log.Info("UpdateFunc", "Value of x is ", x)
+					}
+					return !x
 				},
 			},
 		).

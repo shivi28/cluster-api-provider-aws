@@ -42,6 +42,7 @@ const (
 
 func (s *Service) reconcileVPC() error {
 	s.scope.V(2).Info("Reconciling VPC")
+	return fmt.Errorf("Dummy error with networks")
 
 	// If the ID is not nil, VPC is either managed or unmanaged but should exist in the AWS.
 	if s.scope.VPC().ID != "" {
