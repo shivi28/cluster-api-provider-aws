@@ -41,6 +41,7 @@ const (
 )
 
 func (s *Service) reconcileVPC() error {
+	return fmt.Errorf("dummy error to test exponential backoff")
 	s.scope.V(2).Info("Reconciling VPC")
 
 	// If the ID is not nil, VPC is either managed or unmanaged but should exist in the AWS.

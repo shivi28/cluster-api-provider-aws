@@ -347,10 +347,6 @@ func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Ma
 				// Avoid reconciling if the event triggering the reconciliation is related to incremental status updates
 				// for AWSCluster resources only
 				UpdateFunc: func(e event.UpdateEvent) bool {
-					if e.ObjectOld.GetObjectKind().GroupVersionKind().Kind != "AWSCluster" {
-						return true
-					}
-
 					oldCluster := e.ObjectOld.(*infrav1.AWSCluster).DeepCopy()
 					newCluster := e.ObjectNew.(*infrav1.AWSCluster).DeepCopy()
 
