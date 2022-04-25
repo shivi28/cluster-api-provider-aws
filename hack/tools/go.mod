@@ -12,8 +12,8 @@ require (
 	github.com/onsi/ginkgo v1.16.5
 	github.com/spf13/pflag v1.0.5
 	k8s.io/apimachinery v0.23.0-alpha.4
-	k8s.io/code-generator v0.23.0-alpha.4
-	k8s.io/gengo v0.0.0-20210813121822-485abfe95c7c
+	k8s.io/code-generator v0.25.0-alpha.0
+	k8s.io/gengo v0.0.0-20211129171323-c02415ce4185
 	k8s.io/klog/v2 v2.60.1
 	sigs.k8s.io/cluster-api/hack/tools v0.0.0-20211111175208-4cc2fce2111a
 	sigs.k8s.io/controller-runtime/tools/setup-envtest v0.0.0-20211110210527-619e6b92dab9
@@ -208,7 +208,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 	golang.org/x/exp v0.0.0-20211029160041-3396431c207b // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
 	golang.org/x/text v0.3.7 // indirect
@@ -225,7 +225,7 @@ require (
 	k8s.io/api v0.23.0-alpha.4 // indirect
 	k8s.io/apiextensions-apiserver v0.23.0-alpha.4 // indirect
 	k8s.io/klog v0.2.0 // indirect
-	k8s.io/kube-openapi v0.0.0-20210817084001-7fbd8d59e5b8 // indirect
+	k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42 // indirect
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
 	mvdan.cc/gofumpt v0.3.0 // indirect
 	mvdan.cc/interfacer v0.0.0-20180901003855-c20040233aed // indirect
@@ -236,6 +236,6 @@ require (
 	sigs.k8s.io/kustomize/api v0.11.4 // indirect
 	sigs.k8s.io/kustomize/cmd/config v0.10.6 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.13.6 // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
+	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
