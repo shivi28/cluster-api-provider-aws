@@ -17,6 +17,7 @@ limitations under the License.
 package network
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -44,7 +45,7 @@ func (s *Service) reconcileRouteTables() error {
 		return nil
 	}
 
-	s.scope.V(2).Info("Reconciling routing tables")
+	s.scope.Info("Reconciling routing tables")
 
 	subnetRouteMap, err := s.describeVpcRouteTablesBySubnet()
 	if err != nil {
@@ -86,18 +87,19 @@ func (s *Service) reconcileRouteTables() error {
 						((currentRoute.GatewayId != nil && *currentRoute.GatewayId != *specRoute.GatewayId) ||
 							(currentRoute.NatGatewayId != nil && *currentRoute.NatGatewayId != *specRoute.NatGatewayId)) {
 						if err := wait.WaitForWithRetryable(wait.NewBackoff(), func() (bool, error) {
-							if _, err := s.EC2Client.ReplaceRoute(&ec2.ReplaceRouteInput{
-								RouteTableId:         rt.RouteTableId,
-								DestinationCidrBlock: specRoute.DestinationCidrBlock,
-								GatewayId:            specRoute.GatewayId,
-								NatGatewayId:         specRoute.NatGatewayId,
-							}); err != nil {
-								return false, err
-							}
-							return true, nil
+							return false, fmt.Errorf("dummy error for test")
+							//if _, err := s.EC2Client.ReplaceRoute(&ec2.ReplaceRouteInput{
+							//	RouteTableId:         rt.RouteTableId,
+							//	DestinationCidrBlock: specRoute.DestinationCidrBlock,
+							//	GatewayId:            specRoute.GatewayId,
+							//	NatGatewayId:         specRoute.NatGatewayId,
+							//}); err != nil {
+							//	return false, err
+							//}
+							//return true, nil
 						}); err != nil {
 							record.Warnf(s.scope.InfraCluster(), "FailedReplaceRoute", "Failed to replace outdated route on managed RouteTable %q: %v", *rt.RouteTableId, err)
-							return errors.Wrapf(err, "failed to replace outdated route on route table %q", *rt.RouteTableId)
+							return err
 						}
 					}
 				}

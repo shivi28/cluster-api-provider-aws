@@ -336,6 +336,8 @@ func (r *AWSClusterReconciler) reconcileNormal(clusterScope *scope.ClusterScope)
 	return reconcile.Result{}, nil
 }
 
+var counter int = 0
+
 func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, options controller.Options) error {
 	log := ctrl.LoggerFrom(ctx)
 	controller, err := ctrl.NewControllerManagedBy(mgr).
@@ -347,6 +349,10 @@ func (r *AWSClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Ma
 				// Avoid reconciling if the event triggering the reconciliation is related to incremental status updates
 				// for AWSCluster resources only
 				UpdateFunc: func(e event.UpdateEvent) bool {
+					log.Info("Called updated function","counter", counter)
+					counter++
+					log.Info("\n\n\ne.ObjectOld","e.ObjectOld",e.ObjectOld)
+					log.Info("\n\n\ne.ObjectNew","e.ObjectNew",e.ObjectNew)
 					if e.ObjectOld.GetObjectKind().GroupVersionKind().Kind != "AWSCluster" {
 						return true
 					}
