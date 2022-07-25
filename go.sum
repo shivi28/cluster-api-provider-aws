@@ -133,8 +133,9 @@ github.com/aws/aws-lambda-go v1.30.0/go.mod h1:IF5Q7wj4VyZyUFnZ54IQqeWtctHQ9tz+K
 github.com/aws/aws-sdk-go v1.8.39/go.mod h1:ZRmQr0FajVIyZ4ZzBYKG5P3ZqPz9IHG41ZoMu1ADI3k=
 github.com/aws/aws-sdk-go v1.15.11/go.mod h1:mFuSZ37Z9YOHbQEwBWztmVzqXrEkub65tZoCYDt7FT0=
 github.com/aws/aws-sdk-go v1.43.28/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
-github.com/aws/aws-sdk-go v1.43.29 h1:P6tBpMLwVLS/QwPkaBxfDIF3SmPouoacIk+/7NKnDxY=
 github.com/aws/aws-sdk-go v1.43.29/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
+github.com/aws/aws-sdk-go v1.44.61 h1:NcpLSS3Z0MiVQIYugx4I40vSIEEAXT0baO684ExNRco=
+github.com/aws/aws-sdk-go v1.44.61/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/awslabs/goformation/v4 v4.19.5 h1:Y+Tzh01tWg8gf//AgGKUamaja7Wx9NPiJf1FpZu4/iU=
 github.com/awslabs/goformation/v4 v4.19.5/go.mod h1:JoNpnVCBOUtEz9bFxc9sjy8uBUCLF5c4D1L7RhRTVM8=
 github.com/benbjohnson/clock v1.0.3/go.mod h1:bGMdMPoPVvcYyt1gHDf4J2KE153Yf9BuiUKYMaxlTDM=
