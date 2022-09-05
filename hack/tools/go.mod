@@ -18,7 +18,7 @@ require (
 	sigs.k8s.io/cluster-api/hack/tools v0.0.0-20211111175208-4cc2fce2111a
 	sigs.k8s.io/controller-runtime/tools/setup-envtest v0.0.0-20211110210527-619e6b92dab9
 	sigs.k8s.io/controller-tools v0.7.1-0.20211110210727-ab52f76cc7d1
-	sigs.k8s.io/kind v0.12.0
+	sigs.k8s.io/kind v0.15.0
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
 	sigs.k8s.io/testing_frameworks v0.1.2
 )
@@ -220,7 +220,7 @@ require (
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/tools v0.2.2 // indirect
 	k8s.io/api v0.23.0-alpha.4 // indirect
 	k8s.io/apiextensions-apiserver v0.23.0-alpha.4 // indirect
